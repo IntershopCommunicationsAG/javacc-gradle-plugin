@@ -1,0 +1,231 @@
+= JavaCC Gradle Plugin
+:latestRevision: 1.0.0
+:toc:
+
+== Summary
+This plugin generates Java code from JavaCC and JJTree files. See https://javacc.java.net/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
+
+== Usage
+To apply the JavaCC Gradle Plugin to your projects, add the following in your build script:
+
+[source,groovy,subs="attributes"]
+----
+plugins {
+    id 'com.intershop.gradle.javacc' version '{latestRevision}'
+}
+
+javacc {
+    // configuration container for all javacc configurations
+    configs {
+        template {
+            inputFile = file('jj/TemplateParser.jj')
+            packageName = 'com.corporate.internal.parser'
+            lookahead = '2'
+        }
+    }
+}
+----
+
+This plugin applies code generation to a project. If the JavaBasePlugin is applied to the project, generated java
+sources will be added to the specified source set. Per default the main source set is used.
+
+IMPORTANT: This plugin uses the version 4.2. It is possible to overwrite the project dependency configuration 'javacc', if you want use an other library for JavaCC code generation.
+
+== Tasks
+The JavaCC Gradle plugin adds one task `javacc` to the project. This task depends on all other plugin task. It is a task added for each configuration.
+
+[cols="25%,30%,45%", width="95%, options="header"]
+|===
+| Task name  | Type             | Description
+| javacc     | Task             | Overall ``javaCC`` code generation taks of a project. This tasks depends onl la
+| javacc<configuration name>   | com.intershop.build.javacc.task.JavaCCTask | This task generates Java code for the specified configuration.
+|===
+
+== Project Extension 'javacc'
+This plugin adds an extension *`javacc`* to the project.
+
+=== Properties
+[cols="17%,17%,17%,49%", width="90%, options="header"]
+|===
+|Property       | Type                 | Default value | Description
+|*javaCCVersion*  |`String`            | '4.2'  | The version of JavaCC.
+|===
+
+=== Methods
+[cols="20%,15%,65%", width="95%", options="header"]
+|===
+|*configs*        |<<javaCC, JavaCC>>  | This contains all Java code generation configurations.
+|*forkOptions*     |`<<JavaForkOptions,JavaForkOptions>>` | JavaCC is executed in a fork process. This allows fine grained control over memory
+|===
+
+==== [[javaCC]]Object 'javacc' (JavaCC)
+
+[cols="17%,17%,15%,51%", width="90%, options="header"]
+|===
+|Property | Type | Default value | Description
+
+|*outputDir*            | `File`      | `<project.buildDir>/generated/javacc/<config name>` | Generated code will be written under this directory.
+|*args*                 | `List<String>` |            | Additional command line arguments passed to javaCC
+|*sourceSetName*        | `String`    | `'main'`      | Generated source code will be added to the source set.
+
+|*inputFile*            | `File`      |  | The input jj-File for the code generation.
+|*packageName*          | `String`    |  | A special package name for the code generation. The output directory will be extended with this configuration.
+4+>|The following variables will be interpreted as integer.
+|*lookahead*            | `String`    |  | LOOKAHEAD: The number of tokens to look ahead before making a decision at a choice point during parsing. The default value is 1. +
+The smaller this number, the faster the parser. This number may be overridden for specific productions within the grammar as described later. +
+See the description of the lookahead algorithm for complete details on how lookahead works.
+|*choiceAmbiguityCheck* | `String`    |  | CHOICE_AMBIGUITY_CHECK: This is an integer option whose default value is 2. +
+This is the number of tokens considered in checking choices of the form "A \| B \| ..." for ambiguity. +
+For example, if there is a common two token prefix for both A and B, but no common three token prefix, +
+(assume this option is set to 3) then JavaCC can tell you to use a lookahead of 3 for disambiguation purposes. +
+And if A and B have a common three token prefix, then JavaCC only tell you that you need to have a lookahead of 3 or more. +
+Increasing this can give you more comprehensive ambiguity information at the cost of more processing time. +
+For large grammars such as the Java grammar, increasing this number any further causes the checking to take too much time.
+|*otherAmbiguityCheck*  | `String`    |  | OTHER_AMBIGUITY_CHECK: This is an integer option whose default value is 1. +
+This is the number of tokens considered in checking all other kinds of choices (i.e., of the forms "(A)*", "(A)+", and "(A)?") +
+for ambiguity. This takes more time to do than the choice checking, and hence the default value is set to 1 rather than 2.
+4+>|The following variables will be interpreted as boolean.
+|*staticParam*          | `String`    |  | STATIC: This is a boolean option whose default value is true. +
+If true, all methods and class variables are specified as static in the generated parser and token manager. +
+This allows only one parser object to be present, but it improves the performance of the parser. +
+To perform multiple parses during one run of your Java program, you will have to call the ReInit() +
+method to reinitialize your parser if it is static. If the parser is non-static, you may use the "new" operator +
+to construct as many parsers as you wish. These can all be used simultaneously from different threads.
+|*supportClassVisibilityPublic* | `String`    |  | SUPPORT_CLASS_VISIBILITY_PUBLIC: This is a boolean option whose default value is true. +
+The default action is to generate support classes (such as Token.java, ParseException.java etc) with Public visibility. +
+If set to false, the classes will be generated with package-private visibility.
+|*debugParser*          | `String`    |  | DEBUG_PARSER: This is a boolean option whose default value is false. +
+This option is used to obtain debugging information from the generated parser. Setting this option to true causes +
+the parser to generate a trace of its actions. Tracing may be disabled by calling the method disable_tracing() +
+in the generated parser class. Tracing may be subsequently enabled by calling the method enable_tracing() in the generated parser class.
+|*debugLookahead*       | `String`    |  | DEBUG_LOOKAHEAD: This is a boolean option whose default value is false. +
+Setting this option to true causes the parser to generate all the tracing information it does when the option +
+DEBUG_PARSER is true, and in addition, also causes it to generated a trace of actions performed during lookahead operation.
+|*debugTokenManager*    | `String`    |  | DEBUG_TOKEN_MANAGER: This is a boolean option whose default value is false. +
+This option is used to obtain debugging information from the generated token manager. Setting this option to true causes +
+the token manager to generate a trace of its actions. This trace is rather large and should only be used when you have a +
+lexical error that has been reported to you and you cannot understand why. Typically, in this situation, you can determine +
+the problem by looking at the last few lines of this trace.
+|*errorReporting*       | `String`    |  | ERROR_REPORTING: This is a boolean option whose default value is true. +
+Setting it to false causes errors due to parse errors to be reported in somewhat less detail. The only reason to set +
+this option to false is to improve performance.
+|*javaUnicodeEscape*    | `String`    |  | JAVA_UNICODE_ESCAPE: This is a boolean option whose default value is false. +
+When set to true, the generated parser uses an input stream object that processes Java Unicode escapes (\u...) before +
+sending characters to the token manager. By default, Java Unicode escapes are not processed. This option is ignored if +
+either of options USER_TOKEN_MANAGER, USER_CHAR_STREAM is set to true.
+|*unicodeInput*         | `String`    |  | UNICODE_INPUT: This is a boolean option whose default value is false. +
+When set to true, the generated parser uses uses an input stream object that reads Unicode files. By default, +
+ASCII files are assumed. This option is ignored if either of options USER_TOKEN_MANAGER, USER_CHAR_STREAM is set to true.
+|*ignoreCase*           | `String`    |  | IGNORE_CASE: This is a boolean option whose default value is false. +
+Setting this option to true causes the generated token manager to ignore case in the token specifications and the input files. +
+This is useful for writing grammars for languages such as HTML. It is also possible to localize the effect of IGNORE_CASE +
+by using an alternate mechanism described later.
+|*commonTokenAction*    | `String`    |  | COMMON_TOKEN_ACTION: This is a boolean option whose default value is false. +
+When set to true, every call to the token manager's method "getNextToken" (see the description of the Java Compiler Compiler API) +
+will cause a call to a used defined method "CommonTokenAction" after the token has been scanned in by the token manager. +
+The user must define this method within the TOKEN_MGR_DECLS section. The signature of this method is: void CommonTokenAction(Token t)
+|*userTokenManager*     | `String`    |  | USER_TOKEN_MANAGER: This is a boolean option whose default value is false. +
+The default action is to generate a token manager that works on the specified grammar tokens. If this option is set +
+to true, then the parser is generated to accept tokens from any token manager of type "TokenManager" - this interface +
+is generated into the generated parser directory.
+|*userCharStream*       | `String`    |  | USER_CHAR_STREAM: This is a boolean option whose default value is false. +
+The default action is to generate a character stream reader as specified by the options JAVA_UNICODE_ESCAPE and UNICODE_INPUT. +
+The generated token manager receives characters from this stream reader. If this option is set to true, then the token manager +
+is generated to read characters from any character stream reader of type "CharStream.java". This file is generated into the +
+generated parser directory. This option is ignored if USER_TOKEN_MANAGER is set to true.
+|*buildParser*          | `String`    |  | BUILD_PARSER: This is a boolean option whose default value is true. +
+The default action is to generate the parser file ("MyParser.java" in the above example). When set to false, the parser +
+file is not generated. Typically, this option is set to false when you wish to generate only the token manager and use +
+it without the associated parser.
+|*buildTokenManager*    | `String`    |  | BUILD_TOKEN_MANAGER: This is a boolean option whose default value is true. +
+The default action is to generate the token manager file ("MyParserTokenManager.java" in the above example). +
+When set to false the token manager file is not generated. The only reason to set this option to false is to save +
+some time during parser generation when you fix problems in the parser part of the grammar file and leave the lexical +
+specifications untouched.
+|*tokenManagerUsesParser*   | `String`    |  | TOKEN_MANAGER_USES_PARSER: This is a boolean option whose default value is false. +
+When set to true, the generated token manager will include a field called parser that references the instantiating parser +
+instance (of type MyParser in the above example). The main reason for having a parser in a token manager is using some of +
+its logic in lexical actions. This option has no effect if the STATIC option is set to true.
+|*sanityCheck*          | `String`    |  | SANITY_CHECK: This is a boolean option whose default value is true. +
+JavaCC performs many syntactic and semantic checks on the grammar file during parser generation. Some checks such as +
+detection of left recursion, detection of ambiguity, and bad usage of empty expansions may be suppressed for faster +
+parser generation by setting this option to false. Note that the presence of these errors (even if they are not detected +
+and reported by setting this option to false) can cause unexpected behavior from the generated parser.
+|*forceLaCheck*         | `String`    |  | FORCE_LA_CHECK: This is a boolean option whose default value is false. +
+This option setting controls lookahead ambiguity checking performed by JavaCC. By default (when this option is false), +
+lookahead ambiguity checking is performed for all choice points where the default lookahead of 1 is used. Lookahead +
+ambiguity checking is not performed at choice points where there is an explicit lookahead specification, or if the option +
+LOOKAHEAD is set to something other than 1. Setting this option to true performs lookahead ambiguity checking at all choice +
+points regardless of the lookahead specifications in the grammar file.
+|*cacheTokens*          | `String`    |  | CACHE_TOKENS: This is a boolean option whose default value is false. +
+Setting this option to true causes the generated parser to lookahead for extra tokens ahead of time. This facilitates +
+some performance improvements. However, in this case (when the option is true), interactive applications may not work +
+since the parser needs to work synchronously with the availability of tokens from the input stream. In such cases, it's +
+best to leave this option at its default value.
+|*keepLineColumn*       | `String`    |  | KEEP_LINE_COLUMN:  This is a boolean option whose default value is true. +
+If you set this option to false, the generated CharStream will not have any line/column tracking code. It will be your +
+responsibility  to do it some other way. This is needed for systems which don't care about giving error messages etc.
+4+>|The following variables will be interpreted as string.
+|*tokenExtends*         | `String`    |  | TOKEN_EXTENDS: This is a string option whose default value is "", meaning that the generated Token class will extend java.lang.Object. +
+This option may be set to the name of a class that will be used as the base class for the generated Token class.
+|*tokenFactory*         | `String`    |  | TOKEN_FACTORY: This is a string option whose default value is "", meaning that Tokens will be created by calling Token.newToken(). +
+If set the option names a Token factory class containing a public static Token newToken(int ofKind, String image) method.
+|*jdkVersion*           | `String`    |  |JDK_VERSION: This is a string option whose default value is "1.4"
+|===
+
+[cols="17%,17%,66%", width="90%, options="header"]
+|===
+|Method | Parameter | Description
+
+|*arg* | `String` | Add an additional command line arguments passed to JavaCC
+|===
+
+[cols="17%,17%,66%", width="90%, options="header"]
+|===
+|Closure | Parameter | Description
+
+|*jjtree* | <<jjtree, JJTree>> | Add an additional configuration for JJTree
+|===
+
+==== [[jjtree]]Object 'jjtree' (JJTree)
+
+[cols="17%,17%,15%,51%", width="90%, options="header"]
+|===
+|Property | Type | Default value | Description
+4+>|The following variables will be interpreted as boolean.
+|*multi*			| `String`    |  | MULTI (default: false) Generate a multi mode parse tree. The default for this is false, generating a simple mode parse tree.
+|*nodeDefaultVoid*	| `String`    |  | NODE_DEFAULT_VOID (default: false) Instead of making each non-decorated production an indefinite node, make it void instead.
+|*nodeScopeHook*	| `String`    |  | NODE_SCOPE_HOOK (default: false) Insert calls to user-defined parser methods on entry and exit of every node scope. See Node Scope Hooks.
+|*nodeUsesParser*	| `String`    |  | NODE_USES_PARSER (default: false)JJTree will use an alternate form of the node construction routines where it passes the parser object in. +
+For example,  +
+public static Node MyNode.jjtCreate(MyParser p, int id); +
+MyNode(MyParser p, int id);
+|*buildNodeFiles*	| `String`    |  | BUILD_NODE_FILES (default: true) Generate sample implementations for SimpleNode and any other nodes used in the grammar.
+|*staticParam*		| `String`    |  | STATIC (default: true) Generate code for a static parser. The default for this is true. This must be used consistently with the equivalent JavaCC options. +
+The value of this option is emitted in the JavaCC source.
+|*trackTokens*		| `String`    |  | TRACK_TOKENS (default: false) Insert jjtGetFirstToken(), jjtSetFirstToken(), getLastToken(),  and jjtSetLastToken() methods in SimpleNode. +
+The FirstToken is automatically set up on entry to a node scope; the LastToken is automatically set up on exit from a node scope.
+|*visitor*			| `String`    |  | VISITOR (default: false) Insert a jjtAccept() method in the node classes, and generate a visitor implementation with an entry for every node type used in the grammar.
+4+>|The following variables will be interpreted as string.
+|*nodeClass*		| `String`    |  | NODE_CLASS (default: "") If set defines the name of a user-supplied class that will extend SimpleNode. Any tree nodes created will then be subclasses of NODE_CLASS.
+|*nodePrefix*		| `String`    | 'AST' | NODE_PREFIX (default: "AST") The prefix used to construct node class names from node identifiers in multi mode. The default for this is AST.
+|*nodePackage*		| `String`    |  | NODE_PACKAGE (default: "") The package to generate the node classes into. The default for this is the parser package.
+|*nodeExtends*		| `String`    |  | NODE_EXTENDS (default: "") Deprecated +
+The superclass for the SimpleNode class. By providing a custom superclass you +
+may be able to avoid the need to edit the generated SimpleNode.java.
+|*nodeFactory*		| `String`    |  | NODE_FACTORY (default: "") Specify a class containing a factory method with following signature to construct nodes: public static Node jjtCreate(int id) +
+For backwards compatibility, the value false may also be specified, meaning that SimpleNode will be used as the factory class.
+|*visitorDataType*	| `String`    |  | VISITOR_DATA_TYPE (default: "Object") If this option is set, it is used in the signature of the generated jjtAccept() methods and the visit() methods as the type of the data argument.
+|*visitorReturnType*| `String`    |  | VISITOR_RETURN_TYPE (default: "Object") If this option is set, it is used in the signature of the generated jjtAccept() methods and the visit() methods as the return type of the method.
+|*visitorException*	| `String`    |  | VISITOR_EXCEPTION (default: "") If this option is set, it is used in the signature of the generated jjtAccept() methods and the visit() methods.
+|===
+
+== License
+
+Copyright 2014-2016 Intershop Communications.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
