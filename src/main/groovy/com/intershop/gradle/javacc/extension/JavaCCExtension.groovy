@@ -15,6 +15,7 @@
  */
 package com.intershop.gradle.javacc.extension
 
+import groovy.transform.CompileStatic
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.process.JavaForkOptions
@@ -22,6 +23,7 @@ import org.gradle.process.JavaForkOptions
 /**
  * This is the implementation
  */
+@CompileStatic
 class JavaCCExtension {
 
     /**
@@ -72,7 +74,7 @@ class JavaCCExtension {
             javaCCVersion = JAVACC_DEFAULT_VERSION
         }
 
-        configs = project.container(JavaCC)
+        configs = project.container(JavaCC, new JavaCCFactory(project))
     }
 
     /**

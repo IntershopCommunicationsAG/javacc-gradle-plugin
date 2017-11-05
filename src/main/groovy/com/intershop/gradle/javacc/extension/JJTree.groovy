@@ -15,11 +15,27 @@
  */
 package com.intershop.gradle.javacc.extension
 
+import groovy.transform.CompileStatic
+import org.gradle.api.Project
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
+
 /**
  * This is the container for the jjtree
  * configuration parameters.
  */
+@CompileStatic
 class JJTree {
+
+    private final Project project
+
+    JJTree(Project project) {
+        this.project = project
+
+        parameters = project.objects.property(Map)
+        argsProvider = project.objects.property(List)
+    }
+
     /**
      * Parameters, see jjtree documentation
      * All parameters are strings, so that it is possible to
@@ -53,72 +69,94 @@ class JJTree {
 
     /**
      * Parameter properties for jjtree
-     *
-     * @return properties
      */
-    Properties getParameters() {
-        Properties props = new Properties()
+    private final Property<Map<String, String>> parameters
+
+    Provider<Map<String, String>> getParametersProvider() {
+        Map<String,String> params = [:]
 
         if(getBuildNodeFiles()) {
-            props.put('BUILD_NODE_FILES', getBuildNodeFiles().toBoolean())
+            params.put('BUILD_NODE_FILES', getBuildNodeFiles().toBoolean().toString())
         }
         if(getMulti()) {
-            props.put('MULTI', getMulti().toBoolean())
+            params.put('MULTI', getMulti().toBoolean().toString())
         }
         if(getNodeDefaultVoid()) {
-            props.put('NODE_DEFAULT_VOID', getNodeDefaultVoid().toBoolean())
+            params.put('NODE_DEFAULT_VOID', getNodeDefaultVoid().toBoolean().toString())
         }
         if(getNodeDefaultVoid()) {
-            props.put('NODE_SCOPE_HOOK', getNodeScopeHook().toBoolean())
+            params.put('NODE_SCOPE_HOOK', getNodeScopeHook().toBoolean().toString())
         }
         if(getNodeDefaultVoid()) {
-            props.put('NODE_USES_PARSER', getNodeUsesParser().toBoolean())
+            params.put('NODE_USES_PARSER', getNodeUsesParser().toBoolean().toString())
         }
         if(getNodeDefaultVoid()) {
-            props.put('TRACK_TOKENS', getTrackTokens().toBoolean())
+            params.put('TRACK_TOKENS', getTrackTokens().toBoolean().toString())
         }
         if(getVisitor() != null) {
-            props.put('VISITOR', getVisitor().toBoolean())
+            params.put('VISITOR', getVisitor().toBoolean().toString())
         }
         if(getStaticParam() != null) {
-            props.put('STATIC', getStaticParam().toBoolean())
+            params.put('STATIC', getStaticParam().toBoolean().toString())
         }
 
         if(getNodeClass()) {
-            props.put('NODE_CLASS', getNodeClass())
+            params.put('NODE_CLASS', getNodeClass())
         }
         if(getNodePrefix()) {
-            props.put('NODE_PREFIX', getNodePrefix())
+            params.put('NODE_PREFIX', getNodePrefix())
         }
         if(getNodeExtends()) {
-            props.put('NODE_EXTENDS', getNodeExtends())
+            params.put('NODE_EXTENDS', getNodeExtends())
         }
         if(getNodePackage()) {
-            props.put('NODE_PACKAGE', getNodePackage())
+            params.put('NODE_PACKAGE', getNodePackage())
         }
         if(getNodeFactory()) {
-            props.put('NODE_FACTORY', getNodeFactory())
+            params.put('NODE_FACTORY', getNodeFactory())
         }
         if(getVisitorDataType()) {
-            props.put('VISITOR_DATA_TYPE', getVisitorDataType())
+            params.put('VISITOR_DATA_TYPE', getVisitorDataType())
         }
         if(getVisitorReturnType()) {
-            props.put('VISITOR_RETURN_TYPE', getVisitorReturnType())
+            params.put('VISITOR_RETURN_TYPE', getVisitorReturnType())
         }
         if(getVisitorException()) {
-            props.put('VISITOR_EXCEPTION', getVisitorException())
+            params.put('VISITOR_EXCEPTION', getVisitorException())
         }
 
-        return props
+        parameters.set(params)
+        return parameters
+    }
+
+    /**
+     * Parameter properties for jjtree
+     *
+     * @return properties
+     */
+    Map<String,String> getParameters() {
+        return parameters.get()
     }
 
     /**
      * Additional ars for jjtree
      */
-    def args = []
+    private final Property<List<String>> argsProvider
 
-    void arg(String parameter) {
-        args.add(parameter)
+    Provider<List<String>> getArgsProvider() {
+        return argsProvider
+    }
+
+    List<String> getArgs() {
+        return argsProvider.get()
+    }
+
+    void setArgs(List<String> args) {
+        this.argsProvider.set(args)
+    }
+
+    void args(String paramater) {
+        argsProvider.get().add(paramater)
     }
 
 }

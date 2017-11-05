@@ -18,10 +18,13 @@ package com.intershop.gradle.javacc
 import com.intershop.gradle.javacc.extension.JavaCCExtension
 import com.intershop.gradle.javacc.extension.JavaCC
 import com.intershop.gradle.javacc.task.JavaCCTask
+import groovy.transform.CompileStatic
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
@@ -30,6 +33,7 @@ import org.gradle.api.tasks.SourceSet
 /**
  * The JavaCC plugin implementation.
  */
+@CompileStatic
 class JavaCCPlugin implements Plugin<Project> {
 
     /**
@@ -49,7 +53,7 @@ class JavaCCPlugin implements Plugin<Project> {
         extension = project.extensions.create(JavaCCExtension.JAVACC_EXTENSION_NAME, JavaCCExtension, project)
 
         // add dependency configuration
-        addConfiguration(project, extension)
+        addConfiguration(project)
 
         // create main javaCC task
         Task javaccTask = project.getTasks().create('javacc')
@@ -66,16 +70,22 @@ class JavaCCPlugin implements Plugin<Project> {
      * @param project
      * @param extension
      */
-    private void addConfiguration(final Project project, JavaCCExtension extension) {
-        final Configuration configuration = project.getConfigurations().create(JavaCCExtension.JAVACC_CONFIGURATION_NAME)
+    private void addConfiguration(final Project project) {
+        final Configuration configuration =
+                project.getConfigurations().findByName(JavaCCExtension.JAVACC_CONFIGURATION_NAME) ?:
+                        project.getConfigurations().create(JavaCCExtension.JAVACC_CONFIGURATION_NAME)
+
         configuration
                 .setVisible(false)
                 .setTransitive(false)
                 .setDescription("JavaCC configuration is used for code generation")
-                .defaultDependencies { dependencies  ->
-            DependencyHandler dependencyHandler = project.getDependencies()
-            dependencies.add(dependencyHandler.create('net.java.dev.javacc:javacc:' + extension.getJavaCCVersion()))
-        }
+                .defaultDependencies(new Action<DependencySet>() {
+            @Override
+            void execute(DependencySet dependencies ) {
+                DependencyHandler dependencyHandler = project.getDependencies()
+                dependencies.add(dependencyHandler.create('net.java.dev.javacc:javacc:' + extension.getJavaCCVersion()))
+            }
+        })
     }
 
     /**
@@ -89,25 +99,16 @@ class JavaCCPlugin implements Plugin<Project> {
             JavaCCTask task = project.getTasks().create(jcc.getTaskName(), JavaCCTask)
             task.group = JavaCCExtension.JAVACC_TASK_GROUP
 
-            task.conventionMapping.outputDirectory = {
-                jcc.getOutputDir() ?: new File(project.getBuildDir(),
-                        "${JavaCCExtension.CODEGEN_DEFAULT_OUTPUTPATH}/${jcc.getName().replace(' ', '_')}")
-            }
+            task.setOutputDir(jcc.getOutputDirProvider())
 
-            task.conventionMapping.packageName = { jcc.getPackageName() }
-            task.conventionMapping.inputFile = { jcc.getInputFile() }
-            task.conventionMapping.jdkVersion = { jcc.getJdkVersion() }
-            task.conventionMapping.javaCCParameters = { jcc.getParameters() }
-            task.conventionMapping.jjTreeArgs = { jcc.getJjtree()?.getArgs()}
-            task.conventionMapping.javaCCArgs = { jcc.getArgs()}
+            task.setPackageName(jcc.getPackageNameProvider())
+            task.setInputFile(jcc.getInputFileProvider())
+            task.setJdkVersion(jcc.getJdkVersionProvider())
+            task.setJavaCCParameters(jcc.getParametersProvider())
+            task.setJavaCCArgs(jcc.getArgsProvider())
 
-            task.conventionMapping.jjTreeParameters = {
-                if(jcc.getJjtree()) {
-                    jcc.getJjtree().getParameters()
-                } else {
-                    new Properties()
-                }
-            }
+            task.setJJTreeParameters(jcc.getJJTree()?.getParametersProvider())
+            task.setJJTreeArgs(jcc.getJJTree()?.getArgsProvider())
 
             extension.setForkOptions(task.getForkOptions())
 
@@ -115,8 +116,8 @@ class JavaCCPlugin implements Plugin<Project> {
                 if (jcc.getSourceSetName() && project.plugins.hasPlugin(JavaBasePlugin) && ! project.convention.getPlugin(JavaPluginConvention.class).sourceSets.isEmpty()) {
                     SourceSet sourceSet = project.convention.getPlugin(JavaPluginConvention.class).sourceSets.findByName(jcc.getSourceSetName())
                     if(sourceSet != null) {
-                        if(! sourceSet.java.srcDirs.contains(task.getOutputDirectory())) {
-                            sourceSet.java.srcDir(task.getOutputDirectory())
+                        if(! sourceSet.java.srcDirs.contains(task.getOutputDir()) ) {
+                            sourceSet.java.srcDir(task.getOutputDir())
                         }
                         project.tasks.getByName(sourceSet.compileJavaTaskName).dependsOn(task)
                     }

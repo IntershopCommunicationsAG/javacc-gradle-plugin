@@ -15,44 +15,244 @@
  */
 package com.intershop.gradle.javacc.extension
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.gradle.api.Named
+import org.gradle.api.Project
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.util.ConfigureUtil
 import org.gradle.util.GUtil
+
+import javax.swing.JTree
 
 /**
  * This is the container for all JavaCC related configuration details.
  */
+@CompileStatic
 @Slf4j
 class JavaCC implements Named {
 
+    private final Project project
+    private JJTree jjtree
+
+    final String name
+
     /**
-     * Constructor
-     * @param name
+     * Output path
      */
-    JavaCC(String name) {
-        this.name = name
+    private final Property<File> outputDir
+
+    Provider<File> getOutputDirProvider() {
+        return outputDir
+    }
+
+    File getOutputDir() {
+        return outputDir.get()
+    }
+
+    void setOutputDir(File outputDir) {
+        this.outputDir.set(outputDir)
     }
 
     /**
-     * Output dir
+     * Package name of the generated code
      */
-    File outputDir
+    private final Property<String> packageName
 
-    /**
-     * Package name for sources
-     */
-    String packageName
+    Provider<String> getPackageNameProvider() {
+        return packageName
+    }
+
+    String getPackageName() {
+        return packageName.get()
+    }
+
+    void setPackageName(String packageName) {
+        this.packageName.set(packageName)
+    }
 
     /**
      * Input file
      */
-    File inputFile
+
+    private final Property<File> inputFile
+
+    Provider<File> getInputFileProvider() {
+        return inputFile
+    }
+
+    File getInputFile() {
+        return inputFile.get()
+    }
+
+    void setInputFile(File inputFile) {
+        this.inputFile.set(inputFile)
+    }
+
+    private final Property<String> jdkVersion
+
+    Provider<String> getJdkVersionProvider() {
+        return jdkVersion
+    }
+
+    String getJdkVersion() {
+        return jdkVersion.get()
+    }
+
+    void setJdkVersion(String jdkVersion) {
+        this.jdkVersion.set(jdkVersion)
+    }
 
     /**
-     * Name of this configuration
+     * Parameter properties for javaCC
      */
-    String name
+    private final Property<Map<String, String>> parameters
+
+    Provider<Map<String, String>> getParametersProvider() {
+        Map<String, String> params = [:]
+
+        if(getStaticParam()) {
+            params.put('STATIC', getStaticParam().toBoolean().toString())
+        }
+        if(getSupportClassVisibilityPublic()) {
+            params.put('SUPPORT_CLASS_VISIBILITY_PUBLIC', getSupportClassVisibilityPublic().toBoolean().toString())
+        }
+        if(getDebugParser()) {
+            params.put('DEBUG_PARSER', getDebugParser().toBoolean().toBoolean().toString())
+        }
+        if(getDebugLookahead()) {
+            params.put('DEBUG_LOOKAHEAD', getDebugLookahead().toBoolean().toString())
+        }
+        if(getDebugTokenManager()) {
+            params.put('DEBUG_TOKEN_MANAGER', getDebugTokenManager().toBoolean().toString())
+        }
+        if(getErrorReporting()) {
+            params.put('ERROR_REPORTING', getErrorReporting().toBoolean().toString())
+        }
+        if(getJavaUnicodeEscape()) {
+            params.put('JAVA_UNICODE_ESCAPE', getJavaUnicodeEscape().toBoolean().toString())
+        }
+        if(getUnicodeInput()) {
+            params.put('UNICODE_INPUT', getUnicodeInput().toBoolean().toString())
+        }
+        if(getIgnoreCase()) {
+            params.put('IGNORE_CASE', getIgnoreCase().toBoolean().toString())
+        }
+        if(getCommonTokenAction()) {
+            params.put('COMMON_TOKEN_ACTION', getCommonTokenAction().toBoolean().toString())
+        }
+        if(getUserTokenManager()) {
+            params.put('USER_TOKEN_MANAGER', getUserTokenManager().toBoolean().toString())
+        }
+        if(getUserCharStream()) {
+            params.put('USER_CHAR_STREAM', getUserCharStream().toBoolean().toString())
+        }
+        if(getBuildParser()) {
+            params.put('BUILD_PARSER', getBuildParser().toBoolean().toString())
+        }
+        if(getBuildTokenManager()) {
+            params.put('BUILD_TOKEN_MANAGER', getBuildTokenManager().toBoolean().toString())
+        }
+        if(getTokenManagerUsesParser()) {
+            params.put('TOKEN_MANAGER_USES_PARSER', getTokenManagerUsesParser())
+        }
+        if(getSanityCheck()) {
+            params.put('SANITY_CHECK', getSanityCheck().toBoolean().toString())
+        }
+        if(getForceLaCheck()) {
+            params.put('FORCE_LA_CHECK', getForceLaCheck().toBoolean().toString())
+        }
+        if(getCacheTokens()) {
+            params.put('CACHE_TOKENS', getCacheTokens().toBoolean().toString())
+        }
+        if(getKeepLineColumn()) {
+            params.put('KEEP_LINE_COLUMN', getKeepLineColumn().toBoolean().toString())
+        }
+
+        if(getTokenExtends()) {
+            try {
+                params.put('CHOICE_AMBIGUITY_CHECK', getChoiceAmbiguityCheck().toInteger().toString())
+            }catch(Exception ex) {
+                log.warn('{} is not an integer value. CHOICE_AMBIGUITY_CHECK is not set. ({})', getChoiceAmbiguityCheck(), ex.getMessage())
+            }
+        }
+        if(getTokenExtends()) {
+            try {
+                params.put('LOOKAHEAD', getLookahead().toInteger().toString())
+            }catch(Exception ex) {
+                log.warn('{} is not an integer value. LOOKAHEAD is not set. ({})', getLookahead(), ex.getMessage())
+            }
+        }
+        if(getTokenExtends()) {
+            try {
+                params.put('OTHER_AMBIGUITY_CHECK', getOtherAmbiguityCheck().toInteger().toString())
+            }catch(Exception ex) {
+                log.warn('{} is not an integer value. OTHER_AMBIGUITY_CHECK is not set. ({})', getOtherAmbiguityCheck(), ex.getMessage())
+            }
+        }
+
+        if(getTokenExtends()) {
+            params.put('TOKEN_EXTENDS', getTokenExtends())
+        }
+        if(getTokenFactory()) {
+            params.put('TOKEN_FACTORY', getTokenFactory())
+        }
+
+        parameters.set(params)
+        return parameters
+    }
+
+    Map<String, String> getParameters() {
+
+        return parameters.get()
+    }
+
+    /**
+     * Name of the source set for generated Java code
+     * default value is 'main' (JavaCCExtension.DEFAULT_SOURCESET_NAME)
+     */
+    private final Property<String> sourceSetName
+
+    Provider<String> getSourceSetNameProvider() {
+        return sourceSetName
+    }
+
+    String getSourceSetName() {
+        return sourceSetName.get()
+    }
+
+    void setSourceSetName(String sourceSetName) {
+        this.sourceSetName.set(sourceSetName)
+    }
+
+    /**
+     * Constructor
+     *
+     * @param project
+     * @param name
+     */
+    JavaCC(Project project, String name) {
+        this.project = project
+        this.name = name
+
+        jjtree = new JJTree(project)
+
+        outputDir = project.objects.property(File)
+        packageName = project.objects.property(String)
+        inputFile = project.objects.property(File)
+        jdkVersion = project.objects.property(String)
+        parameters = project.objects.property(Map)
+        sourceSetName = project.objects.property(String)
+        argsProvider = project.objects.property(List)
+
+        setSourceSetName(JavaCCExtension.DEFAULT_SOURCESET_NAME)
+
+        outputDir.set(project.getLayout().getBuildDirectory().
+                dir("${JavaCCExtension.CODEGEN_DEFAULT_OUTPUTPATH}/${name.replace(' ', '_')}").get().asFile)
+
+    }
 
     /**
      * Parameters, see javacc documentation
@@ -96,128 +296,35 @@ class JavaCC implements Named {
     String tokenExtends
     String tokenFactory
 
-    String jdkVersion
 
     /**
      * Calculate the task name
      * @return
      */
     String getTaskName() {
-        return "javacc" + GUtil.toCamelCase(name);
+        return "javacc" + GUtil.toCamelCase(name)
     }
 
     /**
-     * Parameter properties for javaCC
-     *
-     * @return properties
+     * Additional args for javaCC
      */
-    Properties getParameters() {
-        Properties props = new Properties()
+    private final Property<List<String>> argsProvider
 
-        if(getStaticParam()) {
-            props.put('STATIC', getStaticParam().toBoolean())
-        }
-        if(getSupportClassVisibilityPublic()) {
-            props.put('SUPPORT_CLASS_VISIBILITY_PUBLIC', getSupportClassVisibilityPublic().toBoolean())
-        }
-        if(getDebugParser()) {
-            props.put('DEBUG_PARSER', getDebugParser().toBoolean())
-        }
-        if(getDebugLookahead()) {
-            props.put('DEBUG_LOOKAHEAD', getDebugLookahead().toBoolean())
-        }
-        if(getDebugTokenManager()) {
-            props.put('DEBUG_TOKEN_MANAGER', getDebugTokenManager().toBoolean())
-        }
-        if(getErrorReporting()) {
-            props.put('ERROR_REPORTING', getErrorReporting().toBoolean())
-        }
-        if(getJavaUnicodeEscape()) {
-            props.put('JAVA_UNICODE_ESCAPE', getJavaUnicodeEscape().toBoolean())
-        }
-        if(getUnicodeInput()) {
-            props.put('UNICODE_INPUT', getUnicodeInput().toBoolean())
-        }
-        if(getIgnoreCase()) {
-            props.put('IGNORE_CASE', getIgnoreCase().toBoolean())
-        }
-        if(getCommonTokenAction()) {
-            props.put('COMMON_TOKEN_ACTION', getCommonTokenAction().toBoolean())
-        }
-        if(getUserTokenManager()) {
-            props.put('USER_TOKEN_MANAGER', getUserTokenManager().toBoolean())
-        }
-        if(getUserCharStream()) {
-            props.put('USER_CHAR_STREAM', getUserCharStream().toBoolean())
-        }
-        if(getBuildParser()) {
-            props.put('BUILD_PARSER', getBuildParser().toBoolean())
-        }
-        if(getBuildTokenManager()) {
-            props.put('BUILD_TOKEN_MANAGER', getBuildTokenManager().toBoolean())
-        }
-        if(getTokenManagerUsesParser()) {
-            props.put('TOKEN_MANAGER_USES_PARSER', getTokenManagerUsesParser())
-        }
-        if(getSanityCheck()) {
-            props.put('SANITY_CHECK', getSanityCheck().toBoolean())
-        }
-        if(getForceLaCheck()) {
-            props.put('FORCE_LA_CHECK', getForceLaCheck().toBoolean())
-        }
-        if(getCacheTokens()) {
-            props.put('CACHE_TOKENS', getCacheTokens().toBoolean())
-        }
-        if(getKeepLineColumn()) {
-            props.put('KEEP_LINE_COLUMN', getKeepLineColumn().toBoolean())
-        }
-
-        if(getTokenExtends()) {
-            try {
-                props.put('CHOICE_AMBIGUITY_CHECK', getChoiceAmbiguityCheck().toInteger())
-            }catch(Exception ex) {
-                log.warn('{} is not an integer value. CHOICE_AMBIGUITY_CHECK is not set.', getChoiceAmbiguityCheck())
-            }
-        }
-        if(getTokenExtends()) {
-            try {
-                props.put('LOOKAHEAD', getLookahead().toInteger())
-            }catch(Exception ex) {
-                log.warn('{} is not an integer value. LOOKAHEAD is not set.', getLookahead())
-            }
-        }
-        if(getTokenExtends()) {
-            try {
-                props.put('OTHER_AMBIGUITY_CHECK', getOtherAmbiguityCheck().toInteger())
-            }catch(Exception ex) {
-                log.warn('{} is not an integer value. OTHER_AMBIGUITY_CHECK is not set.', getOtherAmbiguityCheck())
-            }
-        }
-
-        if(getTokenExtends()) {
-            props.put('TOKEN_EXTENDS', getTokenExtends())
-        }
-        if(getTokenFactory()) {
-            props.put('TOKEN_FACTORY', getTokenFactory())
-        }
-
-
-        return props
+    Provider<List<String>> getArgsProvider() {
+        return argsProvider
     }
 
-    /**
-     * Additional ars for javacc
-     */
-    def args = []
-
-    void arg(String parameter) {
-        args.add(parameter)
+    List<String> getArgs() {
+        return argsProvider.get()
     }
 
-    /**
-     * JJTree configuration
-     */
-    JJTree jjtree
+    void setArgs(List<String> args) {
+        this.argsProvider.set(args)
+    }
+
+    void args(String paramater) {
+        argsProvider.get().add(paramater)
+    }
 
     /**
      * JJTree configuration closure
@@ -226,21 +333,10 @@ class JavaCC implements Named {
      * @return
      */
     JJTree jjtree(Closure closure) {
-        jjtree = new JJTree()
         ConfigureUtil.configure(closure, jjtree)
     }
 
-    /**
-     * Name of the source set for generated Java code
-     * default value is 'main'
-     */
-    String sourceSetName
-
-    String getSourceSetName() {
-        if(! this.sourceSetName) {
-            return JavaCCExtension.DEFAULT_SOURCESET_NAME
-        } else {
-            return this.sourceSetName
-        }
+    JJTree getJJTree() {
+        return jjtree
     }
 }

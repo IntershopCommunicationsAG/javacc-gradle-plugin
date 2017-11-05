@@ -24,23 +24,20 @@ plugins {
     // ide plugin
     id 'idea'
 
-    // intershop test plugin
-    id 'com.intershop.gradle.test' version '2.1.0'
-
-    // plugin for documentation
-    id 'org.asciidoctor.convert' version '1.5.3'
-
     // publish plugin
     id 'maven-publish'
 
     // intershop version plugin
-    id 'com.intershop.gradle.scmversion' version '2.1.0'
+    id 'com.intershop.gradle.scmversion' version '3.2.0'
+
+    // plugin for documentation
+    id 'org.asciidoctor.convert' version '1.5.3'
 
     // plugin for publishing to Gradle Portal
-    id 'com.gradle.plugin-publish' version '0.9.5'
+    id 'com.gradle.plugin-publish' version '0.9.9'
 
     // plugin for publishing to jcenter
-    id 'com.jfrog.bintray' version '1.7.1'
+    id 'com.jfrog.bintray' version '1.7.3'
 }
 
 scm {
@@ -63,7 +60,7 @@ if (project.version.endsWith('-SNAPSHOT')) {
 
 test {
     // Gradle versions for test
-    systemProperty 'intershop.gradle.versions', '2.11, 3.1'
+    systemProperty 'intershop.gradle.versions', '4.3'
 }
 
 task copyAsciiDoc {
@@ -149,7 +146,7 @@ publishing {
             }
 
             pom.withXml {
-                def Node root = asNode();
+                def Node root = asNode()
                 root.appendNode('name', project.name)
                 root.appendNode('description', project.description)
                 root.appendNode('url', "https:/gitlab.intershop.de/IntershopGradlePlugins/${project.name}")
@@ -162,7 +159,7 @@ publishing {
                 org.appendNode( 'name', 'Intershop Communications' )
                 org.appendNode( 'url', 'http://intershop.com' )
 
-                def license = root.appendNode( 'licenses' ).appendNode( 'license' );
+                def license = root.appendNode( 'licenses' ).appendNode( 'license' )
                 license.appendNode( 'name', 'Apache License, Version 2.0' )
                 license.appendNode( 'url', 'http://www.apache.org/licenses/LICENSE-2.0' )
                 license.appendNode( 'distribution', 'repo' )
@@ -219,10 +216,9 @@ pluginBundle {
 }
 
 dependencies {
-    testCompile('org.spockframework:spock-core:1.0-groovy-2.4'){
-        exclude group: 'org.codehaus.groovy'
-    }
     testCompile 'commons-io:commons-io:2.2'
+    testCompile 'com.intershop.gradle.test:test-gradle-plugin:3.0.0'
+    testCompile gradleTestKit()
 }
 
 repositories {
