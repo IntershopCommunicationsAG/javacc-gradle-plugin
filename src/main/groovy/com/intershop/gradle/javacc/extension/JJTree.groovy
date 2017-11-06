@@ -32,110 +32,261 @@ class JJTree {
     JJTree(Project project) {
         this.project = project
 
-        parameters = project.objects.property(Map)
         argsProvider = project.objects.property(List)
+
+        multi = project.objects.property(String)
+        nodeDefaultVoid = project.objects.property(String)
+        nodeScopeHook = project.objects.property(String)
+        nodeUsesParser = project.objects.property(String)
+        buildNodeFiles = project.objects.property(String)
+        trackTokens = project.objects.property(String)
+        visitor = project.objects.property(String)
+        staticParam = project.objects.property(String)
+
+        nodeClass = project.objects.property(String)
+        nodePrefix = project.objects.property(String)
+        nodePackage = project.objects.property(String)
+        nodeExtends = project.objects.property(String)
+        nodeFactory = project.objects.property(String)
+
+        visitorDataType = project.objects.property(String)
+        visitorReturnType = project.objects.property(String)
+        visitorException = project.objects.property(String)
+
+        setNodePrefix('AST')
     }
 
     /**
      * Parameters, see jjtree documentation
-     * All parameters are strings, so that it is possible to
-     * identify if the setting is configured.
-     * The configuration of a parameter will override
-     * existing inline configuration.
      *
-     * This parameters are interpreted as boolean.
+     * This are String parameters.
      */
-    String multi
-    String nodeDefaultVoid
-    String nodeScopeHook
-    String nodeUsesParser
-    String buildNodeFiles
-    String trackTokens
-    String visitor
-    String staticParam
+    private final Property<String> multi
 
-    /**
-     * This parameters are interpreted as string.
-     */
-    String nodeClass
-    String nodePrefix = 'AST'
-    String nodePackage
-    String nodeExtends
-    String nodeFactory
+    Provider<String> getMultiProvider() {
+        return multi
+    }
 
-    String visitorDataType
-    String visitorReturnType
-    String visitorException
+    String getMulti() {
+        return multi.getOrNull()
+    }
 
-    /**
-     * Parameter properties for jjtree
-     */
-    private final Property<Map<String, String>> parameters
+    void setMulti(String multi) {
+        this.multi.set(multi)
+    }
 
-    Provider<Map<String, String>> getParametersProvider() {
-        Map<String,String> params = [:]
+    private final Property<String> nodeDefaultVoid
 
-        if(getBuildNodeFiles()) {
-            params.put('BUILD_NODE_FILES', getBuildNodeFiles().toBoolean().toString())
-        }
-        if(getMulti()) {
-            params.put('MULTI', getMulti().toBoolean().toString())
-        }
-        if(getNodeDefaultVoid()) {
-            params.put('NODE_DEFAULT_VOID', getNodeDefaultVoid().toBoolean().toString())
-        }
-        if(getNodeDefaultVoid()) {
-            params.put('NODE_SCOPE_HOOK', getNodeScopeHook().toBoolean().toString())
-        }
-        if(getNodeDefaultVoid()) {
-            params.put('NODE_USES_PARSER', getNodeUsesParser().toBoolean().toString())
-        }
-        if(getNodeDefaultVoid()) {
-            params.put('TRACK_TOKENS', getTrackTokens().toBoolean().toString())
-        }
-        if(getVisitor() != null) {
-            params.put('VISITOR', getVisitor().toBoolean().toString())
-        }
-        if(getStaticParam() != null) {
-            params.put('STATIC', getStaticParam().toBoolean().toString())
-        }
+    Provider<String> getNodeDefaultVoidProvider() {
+        return nodeDefaultVoid
+    }
 
-        if(getNodeClass()) {
-            params.put('NODE_CLASS', getNodeClass())
-        }
-        if(getNodePrefix()) {
-            params.put('NODE_PREFIX', getNodePrefix())
-        }
-        if(getNodeExtends()) {
-            params.put('NODE_EXTENDS', getNodeExtends())
-        }
-        if(getNodePackage()) {
-            params.put('NODE_PACKAGE', getNodePackage())
-        }
-        if(getNodeFactory()) {
-            params.put('NODE_FACTORY', getNodeFactory())
-        }
-        if(getVisitorDataType()) {
-            params.put('VISITOR_DATA_TYPE', getVisitorDataType())
-        }
-        if(getVisitorReturnType()) {
-            params.put('VISITOR_RETURN_TYPE', getVisitorReturnType())
-        }
-        if(getVisitorException()) {
-            params.put('VISITOR_EXCEPTION', getVisitorException())
-        }
+    String getNodeDefaultVoid() {
+        return nodeDefaultVoid.getOrNull()
+    }
 
-        parameters.set(params)
-        return parameters
+    void setNodeDefaultVoid(String nodeDefaultVoid) {
+        this.nodeDefaultVoid.set(nodeDefaultVoid)
+    }
+
+    private final Property<String> nodeScopeHook
+
+    Provider<String> getNodeScopeHookProvider() {
+        return nodeScopeHook
+    }
+
+    String getNodeScopeHook() {
+        return nodeScopeHook.getOrNull()
+    }
+
+    void setNodeScopeHook(String nodeScopeHook) {
+        this.nodeScopeHook.set(nodeScopeHook)
+    }
+
+    private final Property<String> nodeUsesParser
+
+    Provider<String> getNodeUsesParserProvider() {
+        return nodeUsesParser
+    }
+
+    String getNodeUsesParser() {
+        return nodeUsesParser.getOrNull()
+    }
+
+    void setNodeUsesParser(String nodeUsesParser) {
+        this.nodeUsesParser.set(nodeUsesParser)
+    }
+
+    private final Property<String> buildNodeFiles
+
+    Provider<String> getBuildNodeFilesProvider() {
+        return buildNodeFiles
+    }
+
+    String getBuildNodeFiles() {
+        return buildNodeFiles.getOrNull()
+    }
+
+    void setBuildNodeFiles(String buildNodeFiles) {
+        this.buildNodeFiles.set(buildNodeFiles)
+    }
+
+    private final Property<String> trackTokens
+
+    Provider<String> getTrackTokensProvider() {
+        return trackTokens
+    }
+
+    String getTrackTokens() {
+        return trackTokens.getOrNull()
+    }
+
+    void setTrackTokens(String trackTokens) {
+        this.trackTokens.set(trackTokens)
+    }
+
+    private final Property<String> visitor
+
+    Provider<String> getVisitorProvider() {
+        return visitor
+    }
+
+    String getVisitor() {
+        return visitor.getOrNull()
+    }
+
+    void setVisitor(String visitor) {
+        this.visitor.set(visitor)
+    }
+
+    private final Property<String> staticParam
+
+    Provider<String> getStaticParamProvider() {
+        return staticParam
+    }
+
+    String getStaticParam() {
+        return staticParam.getOrNull()
+    }
+
+    void setStaticParam(String staticParam) {
+        this.staticParam.set(staticParam)
     }
 
     /**
-     * Parameter properties for jjtree
-     *
-     * @return properties
+     * This parameters are strings.
      */
-    Map<String,String> getParameters() {
-        return parameters.get()
+
+    private final Property<String> nodeClass
+
+    Provider<String> getNodeClassProvider() {
+        return nodeClass
+    }
+
+    String getNodeClass() {
+        return nodeClass.getOrNull()
+    }
+
+    void setNodeClass(String nodeClass) {
+        this.nodeClass.set(nodeClass)
+    }
+
+    private final Property<String> nodePrefix
+
+    Provider<String> getNodePrefixProvider() {
+        return nodePrefix
+    }
+
+    String getNodePrefix() {
+        return nodePrefix.getOrNull()
+    }
+
+    void setNodePrefix(String nodePrefix) {
+        this.nodePrefix.set(nodePrefix)
+    }
+
+    private final Property<String> nodePackage
+
+    Provider<String> getNodePackageProvider() {
+        return nodePackage
+    }
+
+    String getNodePackage() {
+        return nodePackage.getOrNull()
+    }
+
+    void setNodePackage(String nodePackage) {
+        this.nodePackage.set(nodePackage)
+    }
+
+    private final Property<String> nodeExtends
+
+    Provider<String> getNodeExtendsProvider() {
+        return nodeExtends
+    }
+
+    String getNodeExtends() {
+        return nodeExtends.getOrNull()
+    }
+
+    void setNodeExtends(String nodeExtends) {
+        this.nodeExtends.set(nodeExtends)
+    }
+
+    private final Property<String> nodeFactory
+
+    Provider<String> getNodeFactoryProvider() {
+        return nodeFactory
+    }
+
+    String getNodeFactory() {
+        return nodeFactory.getOrNull()
+    }
+
+    void setNodeFactory(String nodeFactory) {
+        this.nodeFactory.set(nodeFactory)
+    }
+
+    private final Property<String> visitorDataType
+
+    Provider<String> getVisitorDataTypeProvider() {
+        return visitorDataType
+    }
+
+    String getVisitorDataType() {
+        return visitorDataType.getOrNull()
+    }
+
+    void setVisitorDataType(String visitorDataType) {
+        this.visitorDataType.set(visitorDataType)
+    }
+
+    private final Property<String> visitorReturnType
+
+    Provider<String> getVisitorReturnTypeProvider() {
+        return visitorReturnType
+    }
+
+    String getVisitorReturnType() {
+        return visitorReturnType.getOrNull()
+    }
+
+    void setVisitorReturnType(String visitorReturnType) {
+        this.visitorReturnType.set(visitorReturnType)
+    }
+
+    private final Property<String> visitorException
+
+    Provider<String> getVisitorExceptionProvider() {
+        return visitorException
+    }
+
+    String getVisitorException() {
+        return visitorException.getOrNull()
+    }
+
+    void setVisitorException(String visitorException) {
+        this.visitorException.set(visitorException)
     }
 
     /**
@@ -148,7 +299,7 @@ class JJTree {
     }
 
     List<String> getArgs() {
-        return argsProvider.get()
+        return argsProvider.getOrNull()
     }
 
     void setArgs(List<String> args) {
@@ -156,7 +307,7 @@ class JJTree {
     }
 
     void args(String paramater) {
-        argsProvider.get().add(paramater)
+        argsProvider.getOrNull().add(paramater)
     }
 
 }

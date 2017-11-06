@@ -49,7 +49,7 @@ class JavaCC implements Named {
     }
 
     File getOutputDir() {
-        return outputDir.get()
+        return outputDir.getOrNull()
     }
 
     void setOutputDir(File outputDir) {
@@ -66,7 +66,7 @@ class JavaCC implements Named {
     }
 
     String getPackageName() {
-        return packageName.get()
+        return packageName.getOrNull()
     }
 
     void setPackageName(String packageName) {
@@ -84,7 +84,7 @@ class JavaCC implements Named {
     }
 
     File getInputFile() {
-        return inputFile.get()
+        return inputFile.getOrNull()
     }
 
     void setInputFile(File inputFile) {
@@ -98,115 +98,11 @@ class JavaCC implements Named {
     }
 
     String getJdkVersion() {
-        return jdkVersion.get()
+        return jdkVersion.getOrNull()
     }
 
     void setJdkVersion(String jdkVersion) {
         this.jdkVersion.set(jdkVersion)
-    }
-
-    /**
-     * Parameter properties for javaCC
-     */
-    private final Property<Map<String, String>> parameters
-
-    Provider<Map<String, String>> getParametersProvider() {
-        Map<String, String> params = [:]
-
-        if(getStaticParam()) {
-            params.put('STATIC', getStaticParam().toBoolean().toString())
-        }
-        if(getSupportClassVisibilityPublic()) {
-            params.put('SUPPORT_CLASS_VISIBILITY_PUBLIC', getSupportClassVisibilityPublic().toBoolean().toString())
-        }
-        if(getDebugParser()) {
-            params.put('DEBUG_PARSER', getDebugParser().toBoolean().toBoolean().toString())
-        }
-        if(getDebugLookahead()) {
-            params.put('DEBUG_LOOKAHEAD', getDebugLookahead().toBoolean().toString())
-        }
-        if(getDebugTokenManager()) {
-            params.put('DEBUG_TOKEN_MANAGER', getDebugTokenManager().toBoolean().toString())
-        }
-        if(getErrorReporting()) {
-            params.put('ERROR_REPORTING', getErrorReporting().toBoolean().toString())
-        }
-        if(getJavaUnicodeEscape()) {
-            params.put('JAVA_UNICODE_ESCAPE', getJavaUnicodeEscape().toBoolean().toString())
-        }
-        if(getUnicodeInput()) {
-            params.put('UNICODE_INPUT', getUnicodeInput().toBoolean().toString())
-        }
-        if(getIgnoreCase()) {
-            params.put('IGNORE_CASE', getIgnoreCase().toBoolean().toString())
-        }
-        if(getCommonTokenAction()) {
-            params.put('COMMON_TOKEN_ACTION', getCommonTokenAction().toBoolean().toString())
-        }
-        if(getUserTokenManager()) {
-            params.put('USER_TOKEN_MANAGER', getUserTokenManager().toBoolean().toString())
-        }
-        if(getUserCharStream()) {
-            params.put('USER_CHAR_STREAM', getUserCharStream().toBoolean().toString())
-        }
-        if(getBuildParser()) {
-            params.put('BUILD_PARSER', getBuildParser().toBoolean().toString())
-        }
-        if(getBuildTokenManager()) {
-            params.put('BUILD_TOKEN_MANAGER', getBuildTokenManager().toBoolean().toString())
-        }
-        if(getTokenManagerUsesParser()) {
-            params.put('TOKEN_MANAGER_USES_PARSER', getTokenManagerUsesParser())
-        }
-        if(getSanityCheck()) {
-            params.put('SANITY_CHECK', getSanityCheck().toBoolean().toString())
-        }
-        if(getForceLaCheck()) {
-            params.put('FORCE_LA_CHECK', getForceLaCheck().toBoolean().toString())
-        }
-        if(getCacheTokens()) {
-            params.put('CACHE_TOKENS', getCacheTokens().toBoolean().toString())
-        }
-        if(getKeepLineColumn()) {
-            params.put('KEEP_LINE_COLUMN', getKeepLineColumn().toBoolean().toString())
-        }
-
-        if(getTokenExtends()) {
-            try {
-                params.put('CHOICE_AMBIGUITY_CHECK', getChoiceAmbiguityCheck().toInteger().toString())
-            }catch(Exception ex) {
-                log.warn('{} is not an integer value. CHOICE_AMBIGUITY_CHECK is not set. ({})', getChoiceAmbiguityCheck(), ex.getMessage())
-            }
-        }
-        if(getTokenExtends()) {
-            try {
-                params.put('LOOKAHEAD', getLookahead().toInteger().toString())
-            }catch(Exception ex) {
-                log.warn('{} is not an integer value. LOOKAHEAD is not set. ({})', getLookahead(), ex.getMessage())
-            }
-        }
-        if(getTokenExtends()) {
-            try {
-                params.put('OTHER_AMBIGUITY_CHECK', getOtherAmbiguityCheck().toInteger().toString())
-            }catch(Exception ex) {
-                log.warn('{} is not an integer value. OTHER_AMBIGUITY_CHECK is not set. ({})', getOtherAmbiguityCheck(), ex.getMessage())
-            }
-        }
-
-        if(getTokenExtends()) {
-            params.put('TOKEN_EXTENDS', getTokenExtends())
-        }
-        if(getTokenFactory()) {
-            params.put('TOKEN_FACTORY', getTokenFactory())
-        }
-
-        parameters.set(params)
-        return parameters
-    }
-
-    Map<String, String> getParameters() {
-
-        return parameters.get()
     }
 
     /**
@@ -220,7 +116,7 @@ class JavaCC implements Named {
     }
 
     String getSourceSetName() {
-        return sourceSetName.get()
+        return sourceSetName.getOrNull()
     }
 
     void setSourceSetName(String sourceSetName) {
@@ -228,74 +124,350 @@ class JavaCC implements Named {
     }
 
     /**
-     * Constructor
-     *
-     * @param project
-     * @param name
+     * Parameters, see javacc documentation
+     * This are the integer parameters.
      */
-    JavaCC(Project project, String name) {
-        this.project = project
-        this.name = name
+    private final Property<Integer> lookahead
 
-        jjtree = new JJTree(project)
+    Provider<Integer> getLookaheadProvider() {
+        return lookahead
+    }
 
-        outputDir = project.objects.property(File)
-        packageName = project.objects.property(String)
-        inputFile = project.objects.property(File)
-        jdkVersion = project.objects.property(String)
-        parameters = project.objects.property(Map)
-        sourceSetName = project.objects.property(String)
-        argsProvider = project.objects.property(List)
+    int getLookahead() {
+        return lookahead.getOrNull()
+    }
 
-        setSourceSetName(JavaCCExtension.DEFAULT_SOURCESET_NAME)
+    void setLookahead(int lookahead) {
+        this.lookahead.set(lookahead)
+    }
 
-        outputDir.set(project.getLayout().getBuildDirectory().
-                dir("${JavaCCExtension.CODEGEN_DEFAULT_OUTPUTPATH}/${name.replace(' ', '_')}").get().asFile)
+    private final Property<Integer> choiceAmbiguityCheck
 
+    Provider<Integer> getChoiceAmbiguityCheckProvider() {
+        return choiceAmbiguityCheck
+    }
+
+    int getChoiceAmbiguityCheck() {
+        return choiceAmbiguityCheck.getOrNull()
+    }
+
+    void setChoiceAmbiguityCheck(int choiceAmbiguityCheck) {
+        this.choiceAmbiguityCheck.set(choiceAmbiguityCheck)
+    }
+
+    private final Property<Integer> otherAmbiguityCheck
+
+    Provider<Integer> getOtherAmbiguityCheckProvider() {
+        return otherAmbiguityCheck
+    }
+
+    Integer getOtherAmbiguityCheck() {
+        return otherAmbiguityCheck.getOrNull()
+    }
+
+    void setOtherAmbiguityCheck(Integer otherAmbiguityCheck) {
+        this.otherAmbiguityCheck.set(otherAmbiguityCheck)
     }
 
     /**
-     * Parameters, see javacc documentation
-     * All parameters are strings, so that it is possible to
-     * identify if the setting is configured.
-     * The configuration of a parameter will override
-     * existing inline configuration.
-     *
-     * This parameters are interpreted as integer.
+     * This are the boolean parameters.
      */
-    String lookahead
-    String choiceAmbiguityCheck
-    String otherAmbiguityCheck
+    private final Property<String> staticParam
+
+    Provider<String> getStaticParamProvider() {
+        return staticParam
+    }
+
+    String getStaticParam() {
+        return staticParam.getOrNull()
+    }
+
+    void setStaticParam(String staticParam) {
+        this.staticParam.set(staticParam)
+    }
+
+    private final Property<String> supportClassVisibilityPublic
+
+    Provider<String> getSupportClassVisibilityPublicProvider() {
+        return supportClassVisibilityPublic
+    }
+
+    String getSupportClassVisibilityPublic() {
+        return supportClassVisibilityPublic.getOrNull()
+    }
+
+    void setSupportClassVisibilityPublic(String supportClassVisibilityPublic) {
+        this.supportClassVisibilityPublic.set(supportClassVisibilityPublic)
+    }
+
+    private final Property<String> debugParser
+
+    Provider<String> getDebugParserProvider() {
+        return debugParser
+    }
+
+    String getDebugParser() {
+        return debugParser.getOrNull()
+    }
+
+    void setDebugParser(String debugParser) {
+        this.debugParser.set(debugParser)
+    }
+
+    private final Property<String> debugLookahead
+
+    Provider<String> getDebugLookaheadProvider() {
+        return debugLookahead
+    }
+
+    String getDebugLookahead() {
+        return debugLookahead.getOrNull()
+    }
+
+    void setDebugLookahead(String debugLookahead) {
+        this.debugLookahead.set(debugLookahead)
+    }
+
+    private final Property<String> debugTokenManager
+
+    Provider<String> getDebugTokenManagerProvider() {
+        return debugTokenManager
+    }
+
+    String getDebugTokenManager() {
+        return debugTokenManager.getOrNull()
+    }
+
+    void setDebugTokenManager(String debugTokenManager) {
+        this.debugTokenManager.set(debugTokenManager)
+    }
+
+    private final Property<String> errorReporting
+
+    Provider<String> getErrorReportingProvider() {
+        return errorReporting
+    }
+
+    String getErrorReporting() {
+        return errorReporting.getOrNull()
+    }
+
+    void setErrorReporting(String errorReporting) {
+        this.errorReporting.set(errorReporting)
+    }
+
+    private final Property<String> javaUnicodeEscape
+
+    Provider<String> getJavaUnicodeEscapeProvider() {
+        return javaUnicodeEscape
+    }
+
+    String getJavaUnicodeEscape() {
+        return javaUnicodeEscape.getOrNull()
+    }
+
+    void setJavaUnicodeEscape(String javaUnicodeEscape) {
+        this.javaUnicodeEscape.set(javaUnicodeEscape)
+    }
+
+    private final Property<String> unicodeInput
+
+    Provider<String> getUnicodeInputProvider() {
+        return unicodeInput
+    }
+
+    String getUnicodeInput() {
+        return unicodeInput.getOrNull()
+    }
+
+    void setUnicodeInput(String unicodeInput) {
+        this.unicodeInput.set(unicodeInput)
+    }
+
+    private final Property<String> ignoreCase
+
+    Provider<String> getIgnoreCaseProvider() {
+        return ignoreCase
+    }
+
+    String getIgnoreCase() {
+        return ignoreCase.getOrNull()
+    }
+
+    void setIgnoreCase(String ignoreCase) {
+        this.ignoreCase.set(ignoreCase)
+    }
+
+    private final Property<String> commonTokenAction
+
+    Provider<String> getCommonTokenActionProvider() {
+        return commonTokenAction
+    }
+
+    String getCommonTokenAction() {
+        return commonTokenAction.getOrNull()
+    }
+
+    void setCommonTokenAction(String commonTokenAction) {
+        this.commonTokenAction.set(commonTokenAction)
+    }
+
+    private final Property<String> userTokenManager
+
+    Provider<String> getUserTokenManagerProvider() {
+        return userTokenManager
+    }
+
+    String getUserTokenManager() {
+        return userTokenManager.getOrNull()
+    }
+
+    void setUserTokenManager(String userTokenManager) {
+        this.userTokenManager.set(userTokenManager)
+    }
+
+    private final Property<String> userCharStream
+
+    Provider<String> getUserCharStreamProvider() {
+        return userCharStream
+    }
+
+    String getUserCharStream() {
+        return userCharStream.getOrNull()
+    }
+
+    void setUserCharStream(String userCharStream) {
+        this.userCharStream.set(userCharStream)
+    }
+
+    private final Property<String> buildParser
+
+    Provider<String> getBuildParserProvider() {
+        return buildParser
+    }
+
+    String getBuildParser() {
+        return buildParser.getOrNull()
+    }
+
+    void setBuildParser(String buildParser) {
+        this.buildParser.set(buildParser)
+    }
+
+    private final Property<String> buildTokenManager
+
+    Provider<String> getBuildTokenManagerProvider() {
+        return buildTokenManager
+    }
+
+    String getBuildTokenManager() {
+        return buildTokenManager.getOrNull()
+    }
+
+    void setBuildTokenManager(String buildTokenManager) {
+        this.buildTokenManager.set(buildTokenManager)
+    }
+
+    private final Property<String> tokenManagerUsesParser
+
+    Provider<String> getTokenManagerUsesParserProvider() {
+        return tokenManagerUsesParser
+    }
+
+    String getTokenManagerUsesParser() {
+        return tokenManagerUsesParser.getOrNull()
+    }
+
+    void setTokenManagerUsesParser(String tokenManagerUsesParser) {
+        this.tokenManagerUsesParser.set(tokenManagerUsesParser)
+    }
+
+    private final Property<String> sanityCheck
+
+    Provider<String> getSanityCheckProvider() {
+        return sanityCheck
+    }
+
+    String getSanityCheck() {
+        return sanityCheck.getOrNull()
+    }
+
+    void setSanityCheck(String sanityCheck) {
+        this.sanityCheck.set(sanityCheck)
+    }
+
+    private final Property<String> forceLaCheck
+
+    Provider<String> getForceLaCheckProvider() {
+        return forceLaCheck
+    }
+
+    String getForceLaCheck() {
+        return forceLaCheck.getOrNull()
+    }
+
+    void setForceLaCheck(String forceLaCheck) {
+        this.forceLaCheck.set(forceLaCheck)
+    }
+
+    private final Property<String> cacheTokens
+
+    Provider<String> getCacheTokensProvider() {
+        return cacheTokens
+    }
+
+    String getCacheTokens() {
+        return cacheTokens.getOrNull()
+    }
+
+    void setCacheTokens(String cacheTokens) {
+        this.cacheTokens.set(cacheTokens)
+    }
+
+    private final Property<String> keepLineColumn
+
+    Provider<String> getKeepLineColumnProvider() {
+        return keepLineColumn
+    }
+
+    String getKeepLineColumn() {
+        return keepLineColumn.getOrNull()
+    }
+
+    void setKeepLineColumn(String keepLineColumn) {
+        this.keepLineColumn.set(keepLineColumn)
+    }
 
     /**
-     * This parameters are interpreted as boolean.
+     * This parameters are strings.
      */
-    String staticParam
-    String supportClassVisibilityPublic
-    String debugParser
-    String debugLookahead
-    String debugTokenManager
-    String errorReporting
-    String javaUnicodeEscape
-    String unicodeInput
-    String ignoreCase
-    String commonTokenAction
-    String userTokenManager
-    String userCharStream
-    String buildParser
-    String buildTokenManager
-    String tokenManagerUsesParser
-    String sanityCheck
-    String forceLaCheck
-    String cacheTokens
-    String keepLineColumn
+    private final Property<String> tokenExtends
 
-    /**
-     * This parameters are interpreted as string.
-     */
-    String tokenExtends
-    String tokenFactory
+    Provider<String> getTokenExtendsProvider() {
+        return tokenExtends
+    }
 
+    String getTokenExtends() {
+        return tokenExtends.getOrNull()
+    }
+
+    void setTokenExtends(String tokenExtends) {
+        this.tokenExtends.set(tokenExtends)
+    }
+
+    private final Property<String> tokenFactory
+
+    Provider<String> getTokenFactoryProvider() {
+        return tokenFactory
+    }
+
+    String getTokenFactory() {
+        return tokenFactory.getOrNull()
+    }
+
+    void setTokenFactory(String tokenFactory) {
+        this.tokenFactory.set(tokenFactory)
+    }
 
     /**
      * Calculate the task name
@@ -315,7 +487,7 @@ class JavaCC implements Named {
     }
 
     List<String> getArgs() {
-        return argsProvider.get()
+        return argsProvider.getOrNull()
     }
 
     void setArgs(List<String> args) {
@@ -323,7 +495,79 @@ class JavaCC implements Named {
     }
 
     void args(String paramater) {
-        argsProvider.get().add(paramater)
+        argsProvider.getOrNull().add(paramater)
+    }
+
+    private final Property<String> runJJTree
+
+    Provider<String> getRunJJTreeProvider() {
+        return runJJTree
+    }
+
+    String getRunJJTree() {
+        return runJJTree.get()
+    }
+
+    void setRunJJTree(String runJJTree) {
+        this.runJJTree.set(runJJTree)
+    }
+
+
+    /**
+     * Constructor
+     *
+     * @param project
+     * @param name
+     */
+    JavaCC(Project project, String name) {
+        this.project = project
+        this.name = name
+
+        jjtree = new JJTree(project)
+
+        outputDir = project.objects.property(File)
+        packageName = project.objects.property(String)
+        inputFile = project.objects.property(File)
+        jdkVersion = project.objects.property(String)
+        sourceSetName = project.objects.property(String)
+
+        lookahead = project.objects.property(Integer)
+        choiceAmbiguityCheck = project.objects.property(Integer)
+        otherAmbiguityCheck = project.objects.property(Integer)
+
+        staticParam = project.objects.property(String)
+        supportClassVisibilityPublic = project.objects.property(String)
+        debugParser = project.objects.property(String)
+        debugLookahead = project.objects.property(String)
+        debugTokenManager = project.objects.property(String)
+        errorReporting = project.objects.property(String)
+        javaUnicodeEscape = project.objects.property(String)
+        unicodeInput = project.objects.property(String)
+        ignoreCase = project.objects.property(String)
+        commonTokenAction = project.objects.property(String)
+        userTokenManager = project.objects.property(String)
+        userCharStream = project.objects.property(String)
+        buildParser = project.objects.property(String)
+        buildTokenManager = project.objects.property(String)
+        tokenManagerUsesParser = project.objects.property(String)
+        sanityCheck = project.objects.property(String)
+        forceLaCheck = project.objects.property(String)
+        cacheTokens = project.objects.property(String)
+        keepLineColumn = project.objects.property(String)
+
+        tokenExtends = project.objects.property(String)
+        tokenFactory = project.objects.property(String)
+
+        argsProvider = project.objects.property(List)
+
+        runJJTree = project.objects.property(String)
+        setRunJJTree('false')
+
+        setSourceSetName(JavaCCExtension.DEFAULT_SOURCESET_NAME)
+
+        outputDir.set(project.getLayout().getBuildDirectory().
+                dir("${JavaCCExtension.CODEGEN_DEFAULT_OUTPUTPATH}/${name.replace(' ', '_')}").getOrNull().asFile)
+
     }
 
     /**
@@ -333,7 +577,8 @@ class JavaCC implements Named {
      * @return
      */
     JJTree jjtree(Closure closure) {
-        ConfigureUtil.configure(closure, jjtree)
+        setRunJJTree('true')
+        return ConfigureUtil.configure(closure, jjtree)
     }
 
     JJTree getJJTree() {

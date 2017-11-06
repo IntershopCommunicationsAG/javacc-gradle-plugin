@@ -104,11 +104,59 @@ class JavaCCPlugin implements Plugin<Project> {
             task.setPackageName(jcc.getPackageNameProvider())
             task.setInputFile(jcc.getInputFileProvider())
             task.setJdkVersion(jcc.getJdkVersionProvider())
-            task.setJavaCCParameters(jcc.getParametersProvider())
+
+            task.setLookahead(jcc.getLookaheadProvider())
+            task.setChoiceAmbiguityCheck(jcc.getChoiceAmbiguityCheckProvider())
+            task.setOtherAmbiguityCheck(jcc.getOtherAmbiguityCheckProvider())
+
+            task.setStaticParam(jcc.getStaticParamProvider())
+            task.setSupportClassVisibilityPublic(jcc.getSupportClassVisibilityPublicProvider())
+            task.setDebugParser(jcc.getDebugParserProvider())
+            task.setDebugLookahead(jcc.getDebugLookaheadProvider())
+            task.setDebugTokenManager(jcc.getDebugTokenManagerProvider())
+            task.setErrorReporting(jcc.getErrorReportingProvider())
+            task.setJavaUnicodeEscape(jcc.getJavaUnicodeEscapeProvider())
+            task.setUnicodeInput(jcc.getUnicodeInputProvider())
+            task.setIgnoreCase(jcc.getIgnoreCaseProvider())
+            task.setCommonTokenAction(jcc.getCommonTokenActionProvider())
+            task.setUserTokenManager(jcc.getUserTokenManagerProvider())
+            task.setUserCharStream(jcc.getUserCharStreamProvider())
+            task.setBuildParser(jcc.getBuildParserProvider())
+            task.setBuildTokenManager(jcc.getBuildTokenManagerProvider())
+            task.setTokenManagerUsesParser(jcc.getTokenManagerUsesParserProvider())
+            task.setSanityCheck(jcc.getSanityCheckProvider())
+            task.setForceLaCheck(jcc.getForceLaCheckProvider())
+            task.setCacheTokens(jcc.getCacheTokensProvider())
+            task.setKeepLineColumn(jcc.getKeepLineColumnProvider())
+
+            task.setTokenExtends(jcc.getTokenExtendsProvider())
+            task.setTokenFactory(jcc.getTokenFactoryProvider())
+
             task.setJavaCCArgs(jcc.getArgsProvider())
 
-            task.setJJTreeParameters(jcc.getJJTree()?.getParametersProvider())
-            task.setJJTreeArgs(jcc.getJJTree()?.getArgsProvider())
+            task.setRunJJTree(jcc.getRunJJTreeProvider())
+
+                task.setJjTreeMulti(jcc.getJJTree().getMultiProvider())
+                task.setJjTreeNodeDefaultVoid(jcc.getJJTree().getNodeDefaultVoidProvider())
+                task.setJjTreeNodeScopeHook(jcc.getJJTree().getNodeScopeHookProvider())
+                task.setJjTreeNodeUsesParser(jcc.getJJTree().getNodeUsesParserProvider())
+                task.setJjTreeBuildNodeFiles(jcc.getJJTree().getBuildNodeFilesProvider())
+                task.setJjTreeTrackTokens(jcc.getJJTree().getTrackTokensProvider())
+                task.setJjTreeVisitor(jcc.getJJTree().getVisitorProvider())
+                task.setJjTreeStaticParam(jcc.getJJTree().getStaticParamProvider())
+
+                task.setJjTreeNodeClass(jcc.getJJTree().getNodeClassProvider())
+                task.setJjTreeNodePrefix(jcc.getJJTree().getNodePrefixProvider())
+                task.setJjTreeNodePackage(jcc.getJJTree().getNodePackageProvider())
+                task.setJjTreeNodeExtends(jcc.getJJTree().getNodeExtendsProvider())
+                task.setJjTreeNodeFactory(jcc.getJJTree().getNodeFactoryProvider())
+
+                task.setJjTreeVisitorDataType(jcc.getJJTree().getVisitorDataTypeProvider())
+                task.setJjTreeVisitorReturnType(jcc.getJJTree().getVisitorReturnTypeProvider())
+                task.setJjTreeVisitorException(jcc.getJJTree().getVisitorExceptionProvider())
+
+                task.setJJTreeArgs(jcc.getJJTree()?.getArgsProvider())
+
 
             extension.setForkOptions(task.getForkOptions())
 
