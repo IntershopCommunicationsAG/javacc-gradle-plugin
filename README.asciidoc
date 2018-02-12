@@ -1,6 +1,9 @@
 = JavaCC Gradle Plugin
-:latestRevision: 2.0.0
+:latestRevision: 3.0.0
 :toc:
+:icons: font
+
+NOTE: Version 3 of this plugin will only work with Gradle 4 and JDK 8.
 
 == Summary
 This plugin generates Java code from JavaCC and JJTree files. See https://javacc.java.net/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
@@ -55,7 +58,6 @@ This plugin adds an extension *`javacc`* to the project.
 [cols="20%,15%,65%", width="95%", options="header"]
 |===
 |*configs*        |<<javaCC, JavaCC>>  | This contains all Java code generation configurations.
-|*forkOptions*     |`<<JavaForkOptions,JavaForkOptions>>` | JavaCC is executed in a fork process. This allows fine grained control over memory
 |===
 
 ==== [[javaCC]]Object 'javacc' (JavaCC)
@@ -176,8 +178,8 @@ If set the option names a Token factory class containing a public static Token n
 [cols="17%,17%,66%", width="90%, options="header"]
 |===
 |Method | Parameter | Description
-
-|*arg* | `String` | Add an additional command line arguments passed to JavaCC
+|*addArg* | `String` | Add an additional command line argument passed to JavaCC
+|*addArgs* | `List<String>` | Add  additional command line arguments passed to JavaCC
 |===
 
 [cols="17%,17%,66%", width="90%, options="header"]
@@ -218,11 +220,33 @@ For backwards compatibility, the value false may also be specified, meaning that
 |*visitorDataType*	| `String`    |  | VISITOR_DATA_TYPE (default: "Object") If this option is set, it is used in the signature of the generated jjtAccept() methods and the visit() methods as the type of the data argument.
 |*visitorReturnType*| `String`    |  | VISITOR_RETURN_TYPE (default: "Object") If this option is set, it is used in the signature of the generated jjtAccept() methods and the visit() methods as the return type of the method.
 |*visitorException*	| `String`    |  | VISITOR_EXCEPTION (default: "") If this option is set, it is used in the signature of the generated jjtAccept() methods and the visit() methods.
+|*args*                 | `List<String>` |            | Additional command line arguments passed to jjTree
 |===
+
+[cols="17%,17%,66%", width="90%, options="header"]
+|===
+|Method | Parameter | Description
+|*addArg* | `String` | Add an additional command line argument passed to JavaCC
+|*addArgs* | `List<String>` | Add  additional command line arguments passed to JavaCC
+|===
+
+===  Add additional Java VM settings for process runner
+
+[source,groovy,subs="attributes"]
+----
+
+tasks.withType(com.intershop.gradle.javacc.task.JavaCCTask) {
+    forkOptions { JavaForkOptions options ->
+        options.setMaxHeapSize('64m')
+        options.jvmArgs += ['-Dhttp.proxyHost=10.0.0.100', '-Dhttp.proxyPort=8800']
+    }
+}
+
+----
 
 == License
 
-Copyright 2014-2016 Intershop Communications.
+Copyright 2014-2018 Intershop Communications.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

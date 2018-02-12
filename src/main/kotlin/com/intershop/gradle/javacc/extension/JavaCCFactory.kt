@@ -1,35 +1,25 @@
 /*
- * Copyright 2015 Intershop Communications AG.
+ * Copyright 2018 Intershop Communications AG.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- *  limitations under the License.
+ * limitations under the License.
  */
 package com.intershop.gradle.javacc.extension
 
-import groovy.transform.CompileStatic
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 
-@CompileStatic
-class JavaCCFactory implements NamedDomainObjectFactory<JavaCC> {
-
-    final Project project
-
-    JavaCCFactory(Project project) {
-        this.project = project
-    }
-
-    @Override
-    JavaCC create(String name) {
-        return new JavaCC(project, name )
+class JavaCCFactory(private val project: Project) : NamedDomainObjectFactory<JavaCC> {
+    override fun create(name: String) : JavaCC {
+        return JavaCC(project, name)
     }
 }

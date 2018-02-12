@@ -17,6 +17,8 @@ package com.intershop.gradle.javacc
 
 import com.intershop.gradle.test.AbstractIntegrationSpec
 
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+
 class ExamplesSpec extends AbstractIntegrationSpec {
 
     def 'Test Simple Examples'() {
@@ -89,16 +91,17 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         File parserFileNL_Xlator = new File(testProjectDir, 'build/generated/javacc/NL_Xlator/NL_Xlator.java')
 
         then:
-        result.output.contains(':javaccSimple1')
-        result.output.contains(':javaccSimple2')
-        result.output.contains(':javaccSimple3')
-        result.output.contains(':javaccIdList')
-        result.output.contains(':javaccNL_Xlator')
 
-        result.output.contains(':compileSimple1Java')
-        result.output.contains(':compileSimple2Java')
-        result.output.contains(':compileSimple3Java')
-        result.output.contains(':compileNL_XlatorJava')
+        result.task(':javaccSimple1').outcome == SUCCESS
+        result.task(':javaccSimple2').outcome == SUCCESS
+        result.task(':javaccSimple3').outcome == SUCCESS
+        result.task(':javaccIdList').outcome == SUCCESS
+        result.task(':javaccNL_Xlator').outcome == SUCCESS
+
+        result.task(':compileSimple1Java').outcome == SUCCESS
+        result.task(':compileSimple2Java').outcome == SUCCESS
+        result.task(':compileSimple3Java').outcome == SUCCESS
+        result.task(':compileNL_XlatorJava').outcome == SUCCESS
 
         parserFileSimple1.exists()
         parserFileSimple2.exists()

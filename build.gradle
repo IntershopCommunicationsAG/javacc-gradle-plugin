@@ -18,6 +18,8 @@ plugins {
     // project plugins
     id 'java-gradle-plugin'
     id 'groovy'
+    id 'nebula.kotlin' version '1.2.21'
+
     // test coverage
     id 'jacoco'
 
@@ -28,7 +30,7 @@ plugins {
     id 'maven-publish'
 
     // intershop version plugin
-    id 'com.intershop.gradle.scmversion' version '3.2.0'
+    id 'com.intershop.gradle.scmversion' version '3.4.0'
 
     // plugin for documentation
     id 'org.asciidoctor.convert' version '1.5.3'
@@ -37,7 +39,7 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.9.9'
 
     // plugin for publishing to jcenter
-    id 'com.jfrog.bintray' version '1.7.3'
+    id 'com.jfrog.bintray' version '1.8.0'
 }
 
 scm {
@@ -50,8 +52,21 @@ group 'com.intershop.gradle.javacc'
 description 'Gradle javacc plugin'
 version = scm.version.version
 
+gradlePlugin {
+    plugins {
+        javaccPlugin {
+            id = 'com.intershop.gradle.javacc'
+            implementationClass = 'com.intershop.gradle.javacc.JavaCCPlugin'
+        }
+    }
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
 
 // set correct project status
 if (project.version.endsWith('-SNAPSHOT')) {
@@ -60,7 +75,7 @@ if (project.version.endsWith('-SNAPSHOT')) {
 
 test {
     // Gradle versions for test
-    systemProperty 'intershop.gradle.versions', '4.3'
+    systemProperty 'intershop.gradle.versions', '4.5.1'
 }
 
 task copyAsciiDoc {
@@ -208,14 +223,17 @@ pluginBundle {
     tags = ['intershop', 'gradle', 'plugin', 'build', 'javacc']
 
     plugins {
-        escrowPlugin {
-            id = 'com.intershop.gradle.javacc'
+        javaccPlugin {
+            id = gradlePlugin.plugins.javaccPlugin.id
             displayName = project.description
         }
     }
 }
 
 dependencies {
+
+    compileOnly 'net.java.dev.javacc:javacc:4.2'
+
     testCompile 'commons-io:commons-io:2.2'
     testCompile 'com.intershop.gradle.test:test-gradle-plugin:3.0.0'
     testCompile gradleTestKit()
