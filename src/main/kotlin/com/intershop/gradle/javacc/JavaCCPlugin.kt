@@ -47,7 +47,7 @@ class JavaCCPlugin : Plugin<Project> {
      * Configure task for javaCC code generation
      *
      * @param project       project to configure
-     * @param extension     extensio of this plugin
+     * @param extension     extension of this plugin
      */
     private fun configureTask(project: Project, extension: JavaCCExtension) {
         with(project) {
