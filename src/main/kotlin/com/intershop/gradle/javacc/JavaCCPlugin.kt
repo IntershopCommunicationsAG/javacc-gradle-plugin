@@ -34,12 +34,12 @@ class JavaCCPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         with(project) {
-            logger.info("JavaCC plugin adds extension {} to {}", JavaCCExtension.JAVACC_EXTENSION_NAME, project.name)
-            val extension = extensions.findByType(JavaCCExtension::class.java) ?: project.extensions.create(JavaCCExtension.JAVACC_EXTENSION_NAME, JavaCCExtension::class.java, project)
+            logger.info("JavaCC plugin adds extension {} to {}", JavaCCExtension.JAVACC_EXTENSION_NAME, name)
+            val extension = extensions.findByType(JavaCCExtension::class.java) ?: extensions.create(JavaCCExtension.JAVACC_EXTENSION_NAME, JavaCCExtension::class.java, this)
 
-            addJavaCCConfiguration(project, extension)
+            addJavaCCConfiguration(this, extension)
 
-            configureTask(project, extension)
+            configureTask(this, extension)
         }
     }
 
