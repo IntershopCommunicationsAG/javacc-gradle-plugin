@@ -30,9 +30,6 @@ class JavaCCRunner @Inject constructor(private val outputDir: File,
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(JavaCCRunner::class.java.name)
-
-        const val JJTREE_MAIN_CLASS_NAME = "jjtree"
-        const val JAVACC_MAIN_CLASS_NAME = "javacc"
     }
 
     override fun run() {
