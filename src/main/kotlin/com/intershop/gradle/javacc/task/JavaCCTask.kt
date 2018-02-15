@@ -19,428 +19,371 @@ import com.intershop.gradle.javacc.extension.JJTree
 import com.intershop.gradle.javacc.extension.JavaCCExtension
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.*
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.process.JavaForkOptions
 import org.gradle.workers.ForkMode
 import org.gradle.workers.IsolationMode
 import org.gradle.workers.WorkerExecutor
+import org.javacc.parser.LexGen.ignoreCase
 import java.io.File
 import javax.inject.Inject
+import kotlin.reflect.KProperty
+
+operator fun <T> Property<T>.setValue(receiver: Any?, property: KProperty<*>, value: T) = set(value)
+operator fun <T> Property<T>.getValue(receiver: Any?, property: KProperty<*>): T = get()
 
 open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask(){
 
-    @Internal
-    val outputDirProperty: DirectoryProperty = this.newOutputDirectory()
+    private val outputDirProperty: DirectoryProperty = this.newOutputDirectory()
 
+    @get:OutputDirectory
     var outputDir: File
-        @OutputDirectory
-        get() {
-            return outputDirProperty.get().asFile
-        }
-        set(value) {
-            outputDirProperty.set(value)
-        }
+        get() = outputDirProperty.get().asFile
+        set(value) = outputDirProperty.set(value)
+
+    fun provideOutputDir(outputDir: Provider<Directory>) = outputDirProperty.set(outputDir)
 
     // Java CC configuration file
-    @Internal
-    val inputFileProperty: RegularFileProperty = this.newInputFile()
+    private val inputFileProperty: RegularFileProperty = this.newInputFile()
 
+    @get:InputFile
     var inputFile: File
-        @InputFile
-        get() {
-            return inputFileProperty.get().asFile
-        }
-        set(value) {
-            inputFileProperty.set(value)
-        }
+        get() = inputFileProperty.get().asFile
+        set(value) = inputFileProperty.set(value)
 
-    @Internal
-    val packageNameProperty: Property<String> = project.objects.property(String::class.java)
+    fun provideInputFile(inputFile: Provider<RegularFile>) = inputFileProperty.set(inputFile)
 
+    private val packageNameProperty: Property<String> = project.objects.property(String::class.java)
+
+    @get:Input
     var packageName: String
-        @Input
-        get() {
-            return packageNameProperty.getOrElse("")
-        }
-        set(value) {
-            packageNameProperty.set(value)
-        }
+        get() = packageNameProperty.getOrElse("")
+        set(value) = packageNameProperty.set(value)
 
-    val jdkVersionProperty: Property<String> = project.objects.property(String::class.java)
+    fun providePackageName(packageName: Provider<String>) = packageNameProperty.set(packageName)
 
+    private val jdkVersionProperty: Property<String> = project.objects.property(String::class.java)
+
+    @get:Optional
+    @get:Input
     var jdkVersion: String?
-        @Optional
-        @Input
-        get() {
-            return jdkVersionProperty.orNull
-        }
-        set(value) {
-            jdkVersionProperty.set(value)
-        }
+        get() = jdkVersionProperty.orNull
+        set(value) = jdkVersionProperty.set(value)
+
+    fun provideJdkVersion(jdkVersion: Provider<String>) = jdkVersionProperty.set(jdkVersion)
 
     // property is a string, because there are problems with Integer and Int for the property
-    val lookaheadProperty: Property<String> = project.objects.property(String::class.java)
+    private val lookaheadProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var lookahead: Int?
-        @Optional
-        @Input
-        get() {
-            return lookaheadProperty.orNull?.toInt()
-        }
-        set(value) {
-            lookaheadProperty.set(value.toString())
-        }
+        get() = lookaheadProperty.orNull?.toInt()
+        set(value) = lookaheadProperty.set(value.toString())
+
+    fun provideLookahead(lookahead: Provider<String>) = lookaheadProperty.set(lookahead)
 
     // property is a string, because there are problems with Integer and Int for the property
-    val choiceAmbiguityCheckProperty: Property<String> = project.objects.property(String::class.java)
+    private val choiceAmbiguityCheckProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var choiceAmbiguityCheck: Int?
-        @Optional
-        @Input
-        get() {
-            return choiceAmbiguityCheckProperty.orNull?.toInt()
-        }
-        set(value) {
-            choiceAmbiguityCheckProperty.set(value.toString())
-        }
+        get() = choiceAmbiguityCheckProperty.orNull?.toInt()
+        set(value) = choiceAmbiguityCheckProperty.set(value.toString())
+
+    fun provideChoiceAmbiguityCheck(choiceAmbiguityCheck: Provider<String>) = choiceAmbiguityCheckProperty.set(choiceAmbiguityCheck)
 
     // property is a string, because there are problems with Integer and Int for the property
-    val otherAmbiguityCheckProperty: Property<String> = project.objects.property(String::class.java)
+    private val otherAmbiguityCheckProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var otherAmbiguityCheck: Int?
-        @Optional
-        @Input
-        get() {
-            return otherAmbiguityCheckProperty.orNull?.toInt()
-        }
-        set(value) {
-            otherAmbiguityCheckProperty.set(value.toString())
-        }
+        get() = otherAmbiguityCheckProperty.orNull?.toInt()
+        set(value) = otherAmbiguityCheckProperty.set(value.toString())
+
+    fun provideOtherAmbiguityCheck(otherAmbiguityCheck: Provider<String>) = otherAmbiguityCheckProperty.set(otherAmbiguityCheck)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val staticParamProperty: Property<String> = project.objects.property(String::class.java)
+    private val staticParamProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var staticParam: String
-        @Optional
-        @Input
-        get() {
-            return staticParamProperty.getOrElse("")
-        }
-        set(value) {
-            staticParamProperty.set(value)
-        }
+        get() = staticParamProperty.getOrElse("")
+        set(value) = staticParamProperty.set(value)
+
+    fun provideStaticParam(staticParam: Provider<String>) = staticParamProperty.set(staticParam)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val supportClassVisibilityPublicProperty: Property<String> = project.objects.property(String::class.java)
+    private val supportClassVisibilityPublicProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var supportClassVisibilityPublic: String
-        @Optional
-        @Input
-        get() {
-            return supportClassVisibilityPublicProperty.getOrElse("")
-        }
-        set(value) {
-            supportClassVisibilityPublicProperty.set(value)
-        }
+        get() = supportClassVisibilityPublicProperty.getOrElse("")
+        set(value) = supportClassVisibilityPublicProperty.set(value)
+
+    fun provideSupportClassVisibilityPublic(supportClassVisibilityPublic: Provider<String>) = supportClassVisibilityPublicProperty.set(supportClassVisibilityPublic)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val debugParserProperty: Property<String> = project.objects.property(String::class.java)
+    private val debugParserProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var debugParser: String
-        @Optional
-        @Input
-        get() {
-            return debugParserProperty.getOrElse("")
-        }
-        set(value) {
-            debugParserProperty.set(value)
-        }
+        get() = debugParserProperty.getOrElse("")
+        set(value) = debugParserProperty.set(value)
+
+    fun provideDebugParser(debugParser: Provider<String>) = debugParserProperty.set(debugParser)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val debugLookaheadProperty: Property<String> = project.objects.property(String::class.java)
+    private val debugLookaheadProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var debugLookahead: String
-        @Optional
-        @Input
-        get() {
-            return debugLookaheadProperty.getOrElse("")
-        }
-        set(value) {
-            debugLookaheadProperty.set(value)
-        }
+        get() = debugLookaheadProperty.getOrElse("")
+        set(value) = debugLookaheadProperty.set(value)
+
+    fun provideDebugLookahead(debugLookahead: Provider<String>) = debugLookaheadProperty.set(debugLookahead)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val debugTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
+    private val debugTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var debugTokenManager: String
-        @Optional
-        @Input
-        get() {
-            return debugTokenManagerProperty.getOrElse("")
-        }
-        set(value) {
-            debugTokenManagerProperty.set(value)
-        }
+        get() = debugTokenManagerProperty.getOrElse("")
+        set(value) = debugTokenManagerProperty.set(value)
+
+    fun provideDebugTokenManager(debugTokenManager: Provider<String>) = debugTokenManagerProperty.set(debugTokenManager)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val errorReportingProperty: Property<String> = project.objects.property(String::class.java)
+    private val errorReportingProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var errorReporting: String
-        @Optional
-        @Input
-        get() {
-            return errorReportingProperty.getOrElse("")
-        }
-        set(value) {
-            errorReportingProperty.set(value)
-        }
+        get() = errorReportingProperty.getOrElse("")
+        set(value) = errorReportingProperty.set(value)
+
+    fun provideErrorReporting(errorReporting: Provider<String>) = errorReportingProperty.set(errorReporting)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val javaUnicodeEscapeProperty: Property<String> = project.objects.property(String::class.java)
+    private val javaUnicodeEscapeProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var javaUnicodeEscape: String
-        @Optional
-        @Input
-        get() {
-            return javaUnicodeEscapeProperty.getOrElse("")
-        }
-        set(value) {
-            javaUnicodeEscapeProperty.set(value)
-        }
+        get() = javaUnicodeEscapeProperty.getOrElse("")
+        set(value) = javaUnicodeEscapeProperty.set(value)
+
+    fun provideJavaUnicodeEscape(javaUnicodeEscape: Provider<String>) = javaUnicodeEscapeProperty.set(javaUnicodeEscape)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val unicodeInputProperty: Property<String> = project.objects.property(String::class.java)
+    private val unicodeInputProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var unicodeInput: String
-        @Optional
-        @Input
-        get() {
-            return unicodeInputProperty.getOrElse("")
-        }
-        set(value) {
-            unicodeInputProperty.set(value)
-        }
+        get() = unicodeInputProperty.getOrElse("")
+        set(value) = unicodeInputProperty.set(value)
+
+    fun provideUnicodeInput(unicodeInput: Provider<String>) = unicodeInputProperty.set(unicodeInput)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val ignoreCaseProperty: Property<String> = project.objects.property(String::class.java)
+    private val ignoreCaseProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var ignoreCase: String
-        @Optional
-        @Input
-        get() {
-            return ignoreCaseProperty.getOrElse("")
-        }
-        set(value) {
-            ignoreCaseProperty.set(value)
-        }
+        get() = ignoreCaseProperty.getOrElse("")
+        set(value) = ignoreCaseProperty.set(value)
+
+    fun provideIgnoreCase(ignoreCase: Provider<String>) = ignoreCaseProperty.set(ignoreCase)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val commonTokenActionProperty: Property<String> = project.objects.property(String::class.java)
+    private val commonTokenActionProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var commonTokenAction: String
-        @Optional
-        @Input
-        get() {
-            return commonTokenActionProperty.getOrElse("")
-        }
-        set(value) {
-            commonTokenActionProperty.set(value)
-        }
+        get() = commonTokenActionProperty.getOrElse("")
+        set(value) = commonTokenActionProperty.set(value)
+
+    fun provideCommonTokenAction(commonTokenAction: Provider<String>) = commonTokenActionProperty.set(commonTokenAction)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val userTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
+    private val userTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var userTokenManager: String
-        @Optional
-        @Input
-        get() {
-            return userTokenManagerProperty.getOrElse("")
-        }
-        set(value) {
-            userTokenManagerProperty.set(value)
-        }
+        get() = userTokenManagerProperty.getOrElse("")
+        set(value) = userTokenManagerProperty.set(value)
+
+    fun provideUserTokenManager(userTokenManager: Provider<String>) = userTokenManagerProperty.set(userTokenManager)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val userCharStreamProperty: Property<String> = project.objects.property(String::class.java)
+    private val userCharStreamProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var userCharStream: String
-        @Optional
-        @Input
-        get() {
-            return userCharStreamProperty.getOrElse("")
-        }
-        set(value) {
-            userCharStreamProperty.set(value)
-        }
+        get() = userCharStreamProperty.getOrElse("")
+        set(value) = userCharStreamProperty.set(value)
+
+    fun provideUserCharStream(userCharStream: Provider<String>) = userCharStreamProperty.set(userCharStream)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val buildParserProperty: Property<String> = project.objects.property(String::class.java)
+    private val buildParserProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var buildParser: String
-        @Optional
-        @Input
-        get() {
-            return buildParserProperty.getOrElse("")
-        }
-        set(value) {
-            buildParserProperty.set(value)
-        }
+        get() = buildParserProperty.getOrElse("")
+        set(value) = buildParserProperty.set(value)
+
+    fun provideBuildParser(buildParser: Provider<String>) = buildParserProperty.set(buildParser)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val buildTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
+    private val buildTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var buildTokenManager: String
-        @Optional
-        @Input
-        get() {
-            return buildTokenManagerProperty.getOrElse("")
-        }
-        set(value) {
-            buildTokenManagerProperty.set(value)
-        }
+        get() = buildTokenManagerProperty.getOrElse("")
+        set(value) = buildTokenManagerProperty.set(value)
+
+    fun provideBuildTokenManager(buildTokenManager: Provider<String>) = buildTokenManagerProperty.set(buildTokenManager)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val tokenManagerUsesParserProperty: Property<String> = project.objects.property(String::class.java)
+    private val tokenManagerUsesParserProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var tokenManagerUsesParser: String
-        @Optional
-        @Input
-        get() {
-            return tokenManagerUsesParserProperty.getOrElse("")
-        }
-        set(value) {
-            tokenManagerUsesParserProperty.set(value)
-        }
+        get() = tokenManagerUsesParserProperty.getOrElse("")
+        set(value) = tokenManagerUsesParserProperty.set(value)
+
+    fun provideTokenManagerUsesParser(tokenManagerUsesParser: Provider<String>) = tokenManagerUsesParserProperty.set(tokenManagerUsesParser)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val sanityCheckProperty: Property<String> = project.objects.property(String::class.java)
+    private val sanityCheckProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var sanityCheck: String
-        @Optional
-        @Input
-        get() {
-            return sanityCheckProperty.getOrElse("")
-        }
-        set(value) {
-            sanityCheckProperty.set(value)
-        }
+        get() = sanityCheckProperty.getOrElse("")
+        set(value) = sanityCheckProperty.set(value)
+
+    fun provideSanityCheck(sanityCheck: Provider<String>) = sanityCheckProperty.set(sanityCheck)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val forceLaCheckProperty: Property<String> = project.objects.property(String::class.java)
+    private val forceLaCheckProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var forceLaCheck: String
-        @Optional
-        @Input
-        get() {
-            return forceLaCheckProperty.getOrElse("")
-        }
-        set(value) {
-            forceLaCheckProperty.set(value)
-        }
+        get() = forceLaCheckProperty.getOrElse("")
+        set(value) = forceLaCheckProperty.set(value)
+
+    fun provideForceLaCheck(forceLaCheck: Provider<String>) = forceLaCheckProperty.set(forceLaCheck)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val cacheTokensProperty: Property<String> = project.objects.property(String::class.java)
+    private val cacheTokensProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var cacheTokens: String
-        @Optional
-        @Input
-        get() {
-            return cacheTokensProperty.getOrElse("")
-        }
-        set(value) {
-            cacheTokensProperty.set(value)
-        }
+        get() = cacheTokensProperty.getOrElse("")
+        set(value) = cacheTokensProperty.set(value)
+
+    fun provideCacheTokens(cacheTokens: Provider<String>) = cacheTokensProperty.set(cacheTokens)
 
     /**
      * This property will interpreted as boolean if the value is not empty.
      */
-    val keepLineColumnProperty: Property<String> = project.objects.property(String::class.java)
+    private val keepLineColumnProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var keepLineColumn: String
-        @Optional
-        @Input
-        get() {
-            return keepLineColumnProperty.getOrElse("")
-        }
-        set(value) {
-            keepLineColumnProperty.set(value)
-        }
+        get() = keepLineColumnProperty.getOrElse("")
+        set(value) = keepLineColumnProperty.set(value)
 
+    fun provideKeepLineColumn(keepLineColumn: Provider<String>) = keepLineColumnProperty.set(keepLineColumn)
 
-    val tokenExtendsProperty: Property<String> = project.objects.property(String::class.java)
+    private val tokenExtendsProperty: Property<String> = project.objects.property(String::class.java)
 
+    @get:Optional
+    @get:Input
     var tokenExtends: String
-        @Optional
-        @Input
-        get() {
-            return tokenExtendsProperty.getOrElse("")
-        }
-        set(value) {
-            tokenExtendsProperty.set(value)
-        }
+        get() = tokenExtendsProperty.getOrElse("")
+        set(value) = tokenExtendsProperty.set(value)
 
-    val tokenFactoryProperty: Property<String> = project.objects.property(String::class.java)
+    fun provideTokenExtends(tokenExtends: Provider<String>) = tokenExtendsProperty.set(tokenExtends)
 
+    private val tokenFactoryProperty: Property<String> = project.objects.property(String::class.java)
+
+    @get:Optional
+    @get:Input
     var tokenFactory: String?
-        @Optional
-        @Input
-        get() {
-            return tokenFactoryProperty.orNull
-        }
-        set(value) {
-            tokenFactoryProperty.set(value)
-        }
+        get() = tokenFactoryProperty.orNull
+        set(value) = tokenFactoryProperty.set(value)
 
-    val javaCCArgsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
+    fun provideTokenFactory(tokenFactory: Provider<String>) = tokenFactoryProperty.set(tokenFactory)
 
+    private val javaCCArgsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
+
+    @get:Input
     var javaCCArgs: List<String>
-        get() {
-            return javaCCArgsProperty.get()
-        }
-        set(value) {
-            javaCCArgsProperty.set(value)
-        }
+        get() =  javaCCArgsProperty.get()
+        set(value) = javaCCArgsProperty.set(value)
+
+    fun provideJavaCCArgs(javaCCArgs: Provider<List<String>>) = javaCCArgsProperty.set(javaCCArgs)
 
     var jjTree: JJTree? = null
 
@@ -479,7 +422,7 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
             it.isolationMode = IsolationMode.CLASSLOADER
             it.forkMode = ForkMode.AUTO
             if(internalForkOptionsAction != null) {
-                project.logger.debug("JavaCC compile runner Add configured JavaForkOptions.")
+                project.logger.debug("Add configured JavaForkOptions for JavaCC compile runner.")
                 (internalForkOptionsAction as Action<in JavaForkOptions>).execute(it.forkOptions)
             }
         })

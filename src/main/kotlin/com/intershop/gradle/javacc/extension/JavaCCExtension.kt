@@ -19,6 +19,7 @@ import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 
 open class JavaCCExtension (project: Project) {
 
@@ -42,17 +43,17 @@ open class JavaCCExtension (project: Project) {
     }
 
     // javacc version configuration
-    val javaCCVersionProvider: Property<String> = project.objects.property(String::class.java)
+    private val javaCCVersionProperty: Property<String> = project.objects.property(String::class.java)
 
     init {
-        javaCCVersionProvider.set(JAVACC_VERSION)
+        javaCCVersionProperty.set(JAVACC_VERSION)
     }
 
+    // javaCCVersion parameter
+    val javaCCVersionProvider: Provider<String>
+        get() = javaCCVersionProperty
+
     var javaCCVersion: String
-        get() {
-            return javaCCVersionProvider.get()
-        }
-        set(value) {
-            javaCCVersionProvider.set(value)
-        }
+        get() = javaCCVersionProperty.get()
+        set(value) = javaCCVersionProperty.set(value)
 }

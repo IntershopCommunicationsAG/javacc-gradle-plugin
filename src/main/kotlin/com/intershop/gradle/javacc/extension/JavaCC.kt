@@ -18,12 +18,19 @@ package com.intershop.gradle.javacc.extension
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
 import java.io.File
+import kotlin.reflect.KProperty
+
+operator fun <T> Property<T>.setValue(receiver: Any?, property: KProperty<*>, value: T) = set(value)
+operator fun <T> Property<T>.getValue(receiver: Any?, property: KProperty<*>): T = get()
 
 class JavaCC(project: Project, private val confname: String) : Named {
 
@@ -31,298 +38,251 @@ class JavaCC(project: Project, private val confname: String) : Named {
         return confname
     }
 
-    val outputDirProvider: DirectoryProperty = project.layout.directoryProperty()
-    val inputFileProvider: RegularFileProperty = project.layout.fileProperty()
-    val sourceSetNameProvider: Property<String> = project.objects.property(String::class.java)
+    val outputDirProperty: DirectoryProperty = project.layout.directoryProperty()
+    val inputFileProperty: RegularFileProperty = project.layout.fileProperty()
+    private val sourceSetNameProperty: Property<String> = project.objects.property(String::class.java)
 
-    val packageNameProvider: Property<String> = project.objects.property(String::class.java)
-    val jdkVersionProvider: Property<String> = project.objects.property(String::class.java)
+    private val packageNameProperty: Property<String> = project.objects.property(String::class.java)
+    private val jdkVersionProperty: Property<String> = project.objects.property(String::class.java)
 
     // property is a string, because there are problems with Integer and Int for the property
-    val lookaheadProvider: Property<String> = project.objects.property(String::class.java)
+    private val lookaheadProperty: Property<String> = project.objects.property(String::class.java)
     // property is a string, because there are problems with Integer and Int for the property
-    val choiceAmbiguityCheckProvider: Property<String> = project.objects.property(String::class.java)
+    private val choiceAmbiguityCheckProperty: Property<String> = project.objects.property(String::class.java)
     // property is a string, because there are problems with Integer and Int for the property
-    val otherAmbiguityCheckProvider: Property<String> = project.objects.property(String::class.java)
+    private val otherAmbiguityCheckProperty: Property<String> = project.objects.property(String::class.java)
 
     // these properties are interpreted as Boolean, if a value is set
-    val staticParamProvider: Property<String> = project.objects.property(String::class.java)
-    val supportClassVisibilityPublicProvider: Property<String> = project.objects.property(String::class.java)
-    val debugParserProvider: Property<String> = project.objects.property(String::class.java)
-    val debugLookaheadProvider: Property<String> = project.objects.property(String::class.java)
-    val debugTokenManagerProvider: Property<String> = project.objects.property(String::class.java)
-    val errorReportingProvider: Property<String> = project.objects.property(String::class.java)
-    val javaUnicodeEscapeProvider: Property<String> = project.objects.property(String::class.java)
-    val unicodeInputProvider: Property<String> = project.objects.property(String::class.java)
-    val ignoreCaseProvider: Property<String> = project.objects.property(String::class.java)
-    val commonTokenActionProvider: Property<String> = project.objects.property(String::class.java)
-    val userTokenManagerProvider: Property<String> = project.objects.property(String::class.java)
-    val userCharStreamProvider: Property<String> = project.objects.property(String::class.java)
-    val buildParserProvider: Property<String> = project.objects.property(String::class.java)
-    val buildTokenManagerProvider: Property<String> = project.objects.property(String::class.java)
-    val tokenManagerUsesParserProvider: Property<String> = project.objects.property(String::class.java)
-    val sanityCheckProvider: Property<String> = project.objects.property(String::class.java)
-    val forceLaCheckProvider: Property<String> = project.objects.property(String::class.java)
-    val cacheTokensProvider: Property<String> = project.objects.property(String::class.java)
-    val keepLineColumnProvider: Property<String> = project.objects.property(String::class.java)
-    val tokenExtendsProvider: Property<String> = project.objects.property(String::class.java)
-    val tokenFactoryProvider: Property<String> = project.objects.property(String::class.java)
+    private val staticParamProperty: Property<String> = project.objects.property(String::class.java)
+    private val supportClassVisibilityPublicProperty: Property<String> = project.objects.property(String::class.java)
+    private val debugParserProperty: Property<String> = project.objects.property(String::class.java)
+    private val debugLookaheadProperty: Property<String> = project.objects.property(String::class.java)
+    private val debugTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
+    private val errorReportingProperty: Property<String> = project.objects.property(String::class.java)
+    private val javaUnicodeEscapeProperty: Property<String> = project.objects.property(String::class.java)
+    private val unicodeInputProperty: Property<String> = project.objects.property(String::class.java)
+    private val ignoreCaseProperty: Property<String> = project.objects.property(String::class.java)
+    private val commonTokenActionProperty: Property<String> = project.objects.property(String::class.java)
+    private val userTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
+    private val userCharStreamProperty: Property<String> = project.objects.property(String::class.java)
+    private val buildParserProperty: Property<String> = project.objects.property(String::class.java)
+    private val buildTokenManagerProperty: Property<String> = project.objects.property(String::class.java)
+    private val tokenManagerUsesParserProperty: Property<String> = project.objects.property(String::class.java)
+    private val sanityCheckProperty: Property<String> = project.objects.property(String::class.java)
+    private val forceLaCheckProperty: Property<String> = project.objects.property(String::class.java)
+    private val cacheTokensProperty: Property<String> = project.objects.property(String::class.java)
+    private val keepLineColumnProperty: Property<String> = project.objects.property(String::class.java)
+    private val tokenExtendsProperty: Property<String> = project.objects.property(String::class.java)
+    private val tokenFactoryProperty: Property<String> = project.objects.property(String::class.java)
 
-    val argumentsProvider : ListProperty<String> = project.objects.listProperty(String::class.java)
+    private val argumentsProperty : ListProperty<String> = project.objects.listProperty(String::class.java)
+
     val jjtree : JJTree = project.objects.newInstance(JJTree::class.java)
 
     init {
-        outputDirProvider.set(project.layout.buildDirectory.dir("${JavaCCExtension.CODEGEN_OUTPUTPATH}/${name.replace(' ', '_')}"))
-        sourceSetNameProvider.set(SourceSet.MAIN_SOURCE_SET_NAME)
+        outputDirProperty.set(project.layout.buildDirectory.dir("${JavaCCExtension.CODEGEN_OUTPUTPATH}/${name.replace(' ', '_')}"))
+        sourceSetNameProperty.set(SourceSet.MAIN_SOURCE_SET_NAME)
     }
 
+    // output directory
+    val outputDirProvider: Provider<Directory>
+        get() = outputDirProperty
+
     var outputDir: File
-        get() {
-            return outputDirProvider.get().asFile
-        }
-        set(value) {
-            this.outputDirProvider.set(value)
-        }
+        get() =  outputDirProperty.get().asFile
+        set(value) = outputDirProperty.set(value)
+
+    // input file
+    val inputFileProvider: Provider<RegularFile>
+        get() = inputFileProperty
 
     var inputFile: File
-        get() {
-            return inputFileProvider.get().asFile
-        }
-        set(value) {
-            this.inputFileProvider.set(value)
-        }
+        get() = inputFileProperty.get().asFile
+        set(value) = inputFileProperty.set(value)
 
-    var sourceSetName: String
-        get() {
-            return sourceSetNameProvider.get()
-        }
-        set(value) {
-            this.sourceSetNameProvider.set(value)
-        }
+    // sourceSet name
+    val sourceSetNameProvider: Provider<String>
+        get() = sourceSetNameProperty
 
-    var packageName: String
-        get() {
-            return packageNameProvider.get()
-        }
-        set(value) {
-            this.packageNameProvider.set(value)
-        }
+    var sourceSetName by sourceSetNameProperty
 
-    var jdkVersion: String
-        get() {
-            return jdkVersionProvider.get()
-        }
-        set(value) {
-            this.jdkVersionProvider.set(value)
-        }
+    // package name for generated code
+    val packageNameProvider: Provider<String>
+        get() = packageNameProperty
+
+    var packageName by packageNameProperty
+
+    // jdk version
+    val jdkVersionProvider: Provider<String>
+        get() = jdkVersionProperty
+
+    var jdkVersion by jdkVersionProperty
+
+    // lookahead parameter
+    val lookaheadProvider: Provider<String>
+        get() = lookaheadProperty
 
     var lookahead: Int?
-        get() {
-            return lookaheadProvider.orNull?.toInt()
-        }
-        set(value) {
-            this.lookaheadProvider.set(value.toString())
-        }
+        get() = lookaheadProperty.orNull?.toInt()
+        set(value) = lookaheadProperty.set(value.toString())
+
+    // choiceAmbiguityCheck parameter
+    val choiceAmbiguityCheckProvider: Provider<String>
+        get() = choiceAmbiguityCheckProperty
 
     var choiceAmbiguityCheck: Int?
-        get() {
-            return choiceAmbiguityCheckProvider.orNull?.toInt()
-        }
-        set(value) {
-            this.choiceAmbiguityCheckProvider.set(value.toString())
-        }
+        get() = choiceAmbiguityCheckProperty.orNull?.toInt()
+        set(value) = choiceAmbiguityCheckProperty.set(value.toString())
+
+    // otherAmbiguityCheck parameter
+    val otherAmbiguityCheckProvider: Provider<String>
+        get() = otherAmbiguityCheckProperty
 
     var otherAmbiguityCheck: Int?
-        get() {
-            return otherAmbiguityCheckProvider.orNull?.toInt()
-        }
-        set(value) {
-            this.otherAmbiguityCheckProvider.set(value.toString())
-        }
+        get() = otherAmbiguityCheckProperty.orNull?.toInt()
+        set(value) = otherAmbiguityCheckProperty.set(value.toString())
 
-    var staticParam: String
-        get() {
-            return staticParamProvider.get()
-        }
-        set(value) {
-            this.staticParamProvider.set(value)
-        }
+    // staticParam parameter
+    val staticParamProvider: Provider<String>
+        get() = staticParamProperty
 
-    var supportClassVisibilityPublic: String
-        get() {
-            return supportClassVisibilityPublicProvider.get()
-        }
-        set(value) {
-            this.supportClassVisibilityPublicProvider.set(value)
-        }
+    var staticParam by staticParamProperty
 
-    var debugParser: String
-        get() {
-            return debugParserProvider.get()
-        }
-        set(value) {
-            this.debugParserProvider.set(value)
-        }
+    // supportClassVisibilityPublic parameter
+    val supportClassVisibilityPublicProvider: Provider<String>
+        get() = supportClassVisibilityPublicProperty
 
-    var debugLookahead: String
-        get() {
-            return debugLookaheadProvider.get()
-        }
-        set(value) {
-            this.debugLookaheadProvider.set(value)
-        }
+    var supportClassVisibilityPublic by supportClassVisibilityPublicProperty
 
-    var debugTokenManager: String
-        get() {
-            return debugTokenManagerProvider.get()
-        }
-        set(value) {
-            this.debugTokenManagerProvider.set(value)
-        }
+    // debugParser parameter
+    val debugParserProvider: Provider<String>
+        get() = debugParserProperty
 
-    var errorReporting: String
-        get() {
-            return errorReportingProvider.get()
-        }
-        set(value) {
-            this.errorReportingProvider.set(value)
-        }
+    var debugParser by debugParserProperty
 
-    var javaUnicodeEscape: String
-        get() {
-            return javaUnicodeEscapeProvider.get()
-        }
-        set(value) {
-            this.javaUnicodeEscapeProvider.set(value)
-        }
+    // debugLookahead parameter
+    val debugLookaheadProvider: Provider<String>
+        get() = debugLookaheadProperty
 
-    var unicodeInput: String
-        get() {
-            return unicodeInputProvider.get()
-        }
-        set(value) {
-            this.unicodeInputProvider.set(value)
-        }
+    var debugLookahead by debugLookaheadProperty
 
-    var ignoreCase: String
-        get() {
-            return ignoreCaseProvider.get()
-        }
-        set(value) {
-            this.ignoreCaseProvider.set(value)
-        }
+    // debugTokenManager parameter
+    val debugTokenManagerProvider: Provider<String>
+        get() = debugTokenManagerProperty
 
-    var commonTokenAction: String
-        get() {
-            return commonTokenActionProvider.get()
-        }
-        set(value) {
-            this.commonTokenActionProvider.set(value)
-        }
+    var debugTokenManager by debugTokenManagerProperty
 
-    var userTokenManager: String
-        get() {
-            return userTokenManagerProvider.get()
-        }
-        set(value) {
-            this.userTokenManagerProvider.set(value)
-        }
+    // errorReporting parameter
+    val errorReportingProvider: Provider<String>
+        get() = errorReportingProperty
 
-    var userCharStream: String
-        get() {
-            return userCharStreamProvider.get()
-        }
-        set(value) {
-            this.userCharStreamProvider.set(value)
-        }
+    var errorReporting by errorReportingProperty
 
-    var buildParser: String
-        get() {
-            return buildParserProvider.get()
-        }
-        set(value) {
-            this.buildParserProvider.set(value)
-        }
+    // javaUnicodeEscape parameter
+    val javaUnicodeEscapeProvider: Provider<String>
+        get() = javaUnicodeEscapeProperty
 
-    var buildTokenManager: String
-        get() {
-            return buildTokenManagerProvider.get()
-        }
-        set(value) {
-            this.buildTokenManagerProvider.set(value)
-        }
+    var javaUnicodeEscape by javaUnicodeEscapeProperty
 
-    var tokenManagerUsesParser: String
-        get() {
-            return tokenManagerUsesParserProvider.get()
-        }
-        set(value) {
-            this.tokenManagerUsesParserProvider.set(value)
-        }
+    // unicodeInput parameter
+    val unicodeInputProvider: Provider<String>
+        get() = unicodeInputProperty
 
-    var sanityCheck: String
-        get() {
-            return sanityCheckProvider.get()
-        }
-        set(value) {
-            this.sanityCheckProvider.set(value)
-        }
+    var unicodeInput by unicodeInputProperty
 
-    var forceLaCheck: String
-        get() {
-            return forceLaCheckProvider.get()
-        }
-        set(value) {
-            this.forceLaCheckProvider.set(value)
-        }
+    // ignoreCase parameter
+    val ignoreCaseProvider: Provider<String>
+        get() = ignoreCaseProperty
 
-    var cacheTokens: String
-        get() {
-            return cacheTokensProvider.get()
-        }
-        set(value) {
-            this.cacheTokensProvider.set(value)
-        }
+    var ignoreCase by ignoreCaseProperty
 
-    var keepLineColumn: String
-        get() {
-            return keepLineColumnProvider.get()
-        }
-        set(value) {
-            this.keepLineColumnProvider.set(value)
-        }
+    // commonTokenAction parameter
+    val commonTokenActionProvider: Provider<String>
+        get() = commonTokenActionProperty
 
-    var tokenExtends: String
-        get() {
-            return tokenExtendsProvider.get()
-        }
-        set(value) {
-            this.tokenExtendsProvider.set(value)
-        }
+    var commonTokenAction by commonTokenActionProperty
 
-    var tokenFactory: String
-        get() {
-            return tokenFactoryProvider.get()
-        }
-        set(value) {
-            this.tokenFactoryProvider.set(value)
-        }
+    // userTokenManager parameter
+    val userTokenManagerProvider: Provider<String>
+        get() = userTokenManagerProperty
+
+    var userTokenManager by userTokenManagerProperty
+
+    // userCharStream parameter
+    val userCharStreamProvider: Provider<String>
+        get() = userCharStreamProperty
+
+    var userCharStream by userCharStreamProperty
+
+    // buildParser parameter
+    val buildParserProvider: Provider<String>
+        get() = buildParserProperty
+
+    var buildParser by buildParserProperty
+
+    // buildTokenManager parameter
+    val buildTokenManagerProvider: Provider<String>
+        get() = buildTokenManagerProperty
+
+    var buildTokenManager by buildTokenManagerProperty
+
+    // tokenManagerUsesParser parameter
+    val tokenManagerUsesParserProvider: Provider<String>
+        get() = tokenManagerUsesParserProperty
+
+    var tokenManagerUsesParser by tokenManagerUsesParserProperty
+
+    // sanityCheck parameter
+    val sanityCheckProvider: Provider<String>
+        get() = sanityCheckProperty
+
+    var sanityCheck by sanityCheckProperty
+
+    // forceLaCheck parameter
+    val forceLaCheckProvider: Provider<String>
+        get() = forceLaCheckProperty
+
+    var forceLaCheck by forceLaCheckProperty
+
+    // cacheTokens parameter
+    val cacheTokensProvider: Provider<String>
+        get() = cacheTokensProperty
+
+    var cacheTokens by cacheTokensProperty
+
+    // keepLineColumn parameter
+    val keepLineColumnProvider: Provider<String>
+        get() = keepLineColumnProperty
+
+    var keepLineColumn by keepLineColumnProperty
+
+    // tokenExtends parameter
+    val tokenExtendsProvider: Provider<String>
+        get() = tokenExtendsProperty
+
+    var tokenExtends by tokenExtendsProperty
+
+    // tokenFactory parameter
+    val tokenFactoryProvider: Provider<String>
+        get() = tokenFactoryProperty
+
+    var tokenFactory by tokenFactoryProperty
+
+    // args parameter
+    val argsProvider: Provider<List<String>>
+        get() = argumentsProperty
 
     var args: List<String>
-        get() {
-            return argumentsProvider.get()
-        }
-        set(value) {
-            this.argumentsProvider.set(value)
-        }
+        get() = argumentsProperty.get()
+        set(value) = argumentsProperty.set(value)
 
     fun addArg(argument: String) {
-        argumentsProvider.add(argument)
+        argumentsProperty.add(argument)
     }
 
     fun addArgs(args: List<String>) {
         for(arg in args) {
-            argumentsProvider.add(arg)
+            argumentsProperty.add(arg)
         }
     }
 
