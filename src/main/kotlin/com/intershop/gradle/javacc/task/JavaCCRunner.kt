@@ -39,7 +39,7 @@ class JavaCCRunner @Inject constructor(private val outputDir: File,
         if(jjTreeParamList.isNotEmpty()) {
             log.info("Start JJTree first ...")
 
-            val jjTreeParams: MutableList<String> = mutableListOf<String>()
+            val jjTreeParams: MutableList<String> = mutableListOf()
             jjTreeParams.apply {
                 addAll(jjTreeParamList)
                 add("-OUTPUT_DIRECTORY=${outputDir.absolutePath}")
@@ -54,7 +54,7 @@ class JavaCCRunner @Inject constructor(private val outputDir: File,
         if(jjTreeResult == 0) {
             log.info("Start JavaCC code generation")
 
-            val javaCCParams: MutableList<String> = mutableListOf<String>()
+            val javaCCParams: MutableList<String> = mutableListOf()
             javaCCParams.apply {
                 addAll(javaCCParamList)
                 add("-OUTPUT_DIRECTORY=${outputDir.absolutePath}")

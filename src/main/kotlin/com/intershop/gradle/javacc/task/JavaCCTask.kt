@@ -28,7 +28,6 @@ import org.gradle.process.JavaForkOptions
 import org.gradle.workers.ForkMode
 import org.gradle.workers.IsolationMode
 import org.gradle.workers.WorkerExecutor
-import org.javacc.parser.LexGen.ignoreCase
 import java.io.File
 import javax.inject.Inject
 import kotlin.reflect.KProperty
@@ -504,13 +503,13 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
 
     private fun addStringParameter(paramList: MutableList<String>, paramName: String, paramValue: String?) {
         if(paramValue != null) {
-            paramList.add("-$paramName=${paramValue}")
+            paramList.add("-$paramName=$paramValue")
         }
     }
 
     private fun addIntegerParameter(paramList: MutableList<String>, paramName: String, paramValue: Int?) {
         if(paramValue != null) {
-            paramList.add("-$paramName=${paramValue}")
+            paramList.add("-$paramName=$paramValue")
         }
     }
 
