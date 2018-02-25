@@ -98,10 +98,11 @@ class JavaCCPlugin : Plugin<Project> {
                     afterEvaluate {
                         plugins.withType(JavaBasePlugin::class.java, {
                             val javaPluginConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
-                            val sourceSet = javaPluginConvention.sourceSets.findByName(javaCC.sourceSetName)
-                            if(sourceSet != null) {
-                                sourceSet.java.srcDir(this@apply.outputs)
-                            }
+                            javaPluginConvention.sourceSets.matching( {
+                                it.name == javaCC.sourceSetName
+                            }).forEach({
+                                it.java.srcDir(this@apply.outputs)
+                            });
                         })
                     }
 
