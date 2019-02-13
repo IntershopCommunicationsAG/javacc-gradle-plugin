@@ -3,7 +3,7 @@
 :toc:
 :icons: font
 
-NOTE: Version 3 of this plugin will only work with Gradle 4 and JDK 8.
+NOTE: Version 3 of this plugin will only work with Gradle 5 and JDK 8.
 
 == Summary
 This plugin generates Java code from JavaCC and JJTree files. See https://javacc.java.net/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
@@ -246,7 +246,7 @@ tasks.withType(com.intershop.gradle.javacc.task.JavaCCTask) {
 
 == License
 
-Copyright 2014-2018 Intershop Communications.
+Copyright 2014-2019 Intershop Communications.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

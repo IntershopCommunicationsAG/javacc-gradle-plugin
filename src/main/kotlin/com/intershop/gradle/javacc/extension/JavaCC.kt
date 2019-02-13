@@ -38,8 +38,8 @@ class JavaCC(project: Project, private val confname: String) : Named {
         return confname
     }
 
-    val outputDirProperty: DirectoryProperty = project.layout.directoryProperty()
-    val inputFileProperty: RegularFileProperty = project.layout.fileProperty()
+    private val outputDirProperty: DirectoryProperty = project.objects.directoryProperty()
+    private val inputFileProperty: RegularFileProperty = project.objects.fileProperty()
     private val sourceSetNameProperty: Property<String> = project.objects.property(String::class.java)
 
     private val packageNameProperty: Property<String> = project.objects.property(String::class.java)

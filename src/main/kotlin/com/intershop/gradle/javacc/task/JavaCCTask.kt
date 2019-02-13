@@ -37,7 +37,7 @@ operator fun <T> Property<T>.getValue(receiver: Any?, property: KProperty<*>): T
 
 open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask(){
 
-    private val outputDirProperty: DirectoryProperty = this.newOutputDirectory()
+    private val outputDirProperty: DirectoryProperty = project.objects.directoryProperty()
 
     @get:OutputDirectory
     var outputDir: File
@@ -47,7 +47,7 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
     fun provideOutputDir(outputDir: Provider<Directory>) = outputDirProperty.set(outputDir)
 
     // Java CC configuration file
-    private val inputFileProperty: RegularFileProperty = this.newInputFile()
+    private val inputFileProperty: RegularFileProperty = project.objects.fileProperty()
 
     @get:InputFile
     var inputFile: File
@@ -411,12 +411,12 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
         val outDir: File = if(packageName.isBlank()) { outputDir } else { File(outputDir, packageName.replace('.', '/')) }
 
         // start runner
-        workerExecutor.submit(JavaCCRunner::class.java, {
+        workerExecutor.submit(JavaCCRunner::class.java) {
             it.displayName = "Worker for Java source file creation by JavaCC."
             it.setParams( outDir,
-                          inputFile,
-                          calculateJavaCCParameterList(),
-                          calculateJJTreeParameterList())
+                    inputFile,
+                    calculateJavaCCParameterList(),
+                    calculateJJTreeParameterList())
             it.classpath(toolsclasspathfiles)
             it.isolationMode = IsolationMode.CLASSLOADER
             it.forkMode = ForkMode.AUTO
@@ -424,7 +424,7 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
                 project.logger.debug("Add configured JavaForkOptions for JavaCC compile runner.")
                 (internalForkOptionsAction as Action<in JavaForkOptions>).execute(it.forkOptions)
             }
-        })
+        }
 
         workerExecutor.await()
     }

@@ -100,9 +100,9 @@ class JavaCCPlugin : Plugin<Project> {
                             val javaPluginConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
                             javaPluginConvention.sourceSets.matching( {
                                 it.name == javaCC.sourceSetName
-                            }).forEach({
+                            }).forEach {
                                 it.java.srcDir(this@apply.outputs)
-                            });
+                            }
                         })
                     }
 

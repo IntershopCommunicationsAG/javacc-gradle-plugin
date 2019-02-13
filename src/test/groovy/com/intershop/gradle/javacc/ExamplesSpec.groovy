@@ -15,11 +15,10 @@
  */
 package com.intershop.gradle.javacc
 
-import com.intershop.gradle.test.AbstractIntegrationSpec
-
+import com.intershop.gradle.test.AbstractIntegrationGroovySpec
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class ExamplesSpec extends AbstractIntegrationSpec {
+class ExamplesSpec extends AbstractIntegrationGroovySpec {
 
     def 'Test Simple Examples'() {
         given:
@@ -552,8 +551,8 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         when:
         List<String> testArgs = ['testExec', '-s']
 
-        def resultExec = getPreparedGradleRunner()
-                .withArguments(args)
+        getPreparedGradleRunner()
+                .withArguments(testArgs)
                 .withGradleVersion(gradleVersion)
                 .build()
 
@@ -767,8 +766,8 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         when:
         List<String> testArgs = ['testExec', '-s']
 
-        def resultExec = getPreparedGradleRunner()
-                .withArguments(args)
+        getPreparedGradleRunner()
+                .withArguments(testArgs)
                 .withGradleVersion(gradleVersion)
                 .build()
 
@@ -951,6 +950,10 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         result.output.contains(':javaccExample2')
         result.output.contains(':compileExample2Java')
         parserFileExample2.exists()
+
+        result.output.contains(':javaccExample3')
+        result.output.contains(':compileExample3Java')
+        parserFileExample3.exists()
 
         result.output.contains(':javaccExample4')
         result.output.contains(':compileExample4Java')
