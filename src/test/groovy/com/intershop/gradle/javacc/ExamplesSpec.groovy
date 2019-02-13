@@ -15,9 +15,10 @@
  */
 package com.intershop.gradle.javacc
 
-import com.intershop.gradle.test.AbstractIntegrationSpec
+import com.intershop.gradle.test.AbstractIntegrationGroovySpec
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class ExamplesSpec extends AbstractIntegrationSpec {
+class ExamplesSpec extends AbstractIntegrationGroovySpec {
 
     def 'Test Simple Examples'() {
         given:
@@ -89,16 +90,17 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         File parserFileNL_Xlator = new File(testProjectDir, 'build/generated/javacc/NL_Xlator/NL_Xlator.java')
 
         then:
-        result.output.contains(':javaccSimple1')
-        result.output.contains(':javaccSimple2')
-        result.output.contains(':javaccSimple3')
-        result.output.contains(':javaccIdList')
-        result.output.contains(':javaccNL_Xlator')
 
-        result.output.contains(':compileSimple1Java')
-        result.output.contains(':compileSimple2Java')
-        result.output.contains(':compileSimple3Java')
-        result.output.contains(':compileNL_XlatorJava')
+        result.task(':javaccSimple1').outcome == SUCCESS
+        result.task(':javaccSimple2').outcome == SUCCESS
+        result.task(':javaccSimple3').outcome == SUCCESS
+        result.task(':javaccIdList').outcome == SUCCESS
+        result.task(':javaccNL_Xlator').outcome == SUCCESS
+
+        result.task(':compileSimple1Java').outcome == SUCCESS
+        result.task(':compileSimple2Java').outcome == SUCCESS
+        result.task(':compileSimple3Java').outcome == SUCCESS
+        result.task(':compileNL_XlatorJava').outcome == SUCCESS
 
         parserFileSimple1.exists()
         parserFileSimple2.exists()
@@ -549,8 +551,8 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         when:
         List<String> testArgs = ['testExec', '-s']
 
-        def resultExec = getPreparedGradleRunner()
-                .withArguments(args)
+        getPreparedGradleRunner()
+                .withArguments(testArgs)
                 .withGradleVersion(gradleVersion)
                 .build()
 
@@ -764,8 +766,8 @@ class ExamplesSpec extends AbstractIntegrationSpec {
         when:
         List<String> testArgs = ['testExec', '-s']
 
-        def resultExec = getPreparedGradleRunner()
-                .withArguments(args)
+        getPreparedGradleRunner()
+                .withArguments(testArgs)
                 .withGradleVersion(gradleVersion)
                 .build()
 
@@ -931,7 +933,6 @@ class ExamplesSpec extends AbstractIntegrationSpec {
 
         File parserFileExample1 = new File(testProjectDir, 'build/generated/javacc/example1/Example.java')
         File parserFileExample2 = new File(testProjectDir, 'build/generated/javacc/example2/Example.java')
-        File parserFileExample3 = new File(testProjectDir, 'build/generated/javacc/example3/Example.java')
         File parserFileExample4 = new File(testProjectDir, 'build/generated/javacc/example4/Example.java')
         File parserFileExample5 = new File(testProjectDir, 'build/generated/javacc/example5/Example.java')
         File parserFileExample6 = new File(testProjectDir, 'build/generated/javacc/example6/Example.java')

@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-rootProject.name = 'javacc-gradle-plugin'
+rootProject.name = "javacc-gradle-plugin"
