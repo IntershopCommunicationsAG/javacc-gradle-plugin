@@ -72,6 +72,12 @@ gradlePlugin {
     }
 }
 
+pluginBundle {
+    website = "https://github.com/IntershopCommunicationsAG/${project.name}"
+    vcsUrl = "https://github.com/IntershopCommunicationsAG/${project.name}"
+    tags = listOf("intershop", "gradle", "plugin", "build", "javacc")
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -217,36 +223,6 @@ publishing {
             }
         }
     }
-}
-
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-
-    setPublications("intershopMvn")
-
-    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-        repo = "maven"
-        name = project.name
-        userOrg = "intershopcommunicationsag"
-
-        setLicenses("Apache-2.0")
-        vcsUrl = "https://github.com/IntershopCommunicationsAG/${project.name}"
-
-        desc = project.description
-        websiteUrl = "https://github.com/IntershopCommunicationsAG/${project.name}"
-        issueTrackerUrl = "https://github.com/IntershopCommunicationsAG/${project.name}/issues"
-
-        setLabels("intershop", "gradle", "plugin", "build", "javacc")
-        publicDownloadNumbers = true
-
-        version(delegateClosureOf<BintrayExtension.VersionConfig> {
-            name = project.version.toString()
-            desc = "${project.description} ${project.version}"
-            released  = Date().toString()
-            vcsTag = project.version.toString()
-        })
-    })
 }
 
 bintray {
