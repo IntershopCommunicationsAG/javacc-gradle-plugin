@@ -384,10 +384,11 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
 
     fun provideJavaCCArgs(javaCCArgs: Provider<List<String>>) = javaCCArgsProperty.set(javaCCArgs)
 
+    @get:Internal
     var jjTree: JJTree? = null
 
     @get:InputFiles
-    private val toolsclasspathfiles : FileCollection by lazy {
+    val toolsclasspathfiles : FileCollection by lazy {
         val returnFiles = project.files()
         // find files of original JASPER and Eclipse compiler
         returnFiles.from(project.configurations.findByName(JavaCCExtension.JAVACC_CONFIGURATION_NAME))

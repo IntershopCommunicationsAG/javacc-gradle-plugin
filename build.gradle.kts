@@ -92,20 +92,22 @@ tasks {
     }
 
     val copyAsciiDoc = register<Copy>("copyAsciiDoc") {
+        includeEmptyDirs = false
+
         val outputDir = file("$buildDir/tmp/asciidoctorSrc")
-        val inputFiles = fileTree(mapOf("dir" to rootDir, "include" to listOf("**/*.asciidoc")))
+        val inputFiles = fileTree(mapOf("dir" to rootDir,
+                        "include" to listOf("**/*.asciidoc"),
+                        "exclude" to listOf("build/**")))
 
         inputs.files.plus( inputFiles )
         outputs.dir( outputDir )
 
-        doLast {
+        doFirst {
             outputDir.mkdir()
-
-            project.copy {
-                from(inputFiles)
-                into(outputDir)
-            }
         }
+
+        from(inputFiles)
+        into(outputDir)
     }
 
     withType<AsciidoctorTask> {
@@ -148,7 +150,7 @@ tasks {
     }
 
     getByName("bintrayUpload")?.dependsOn("asciidoctor")
-    getByName("publishToMavenLocal")?.dependsOn("asciidoctor")
+    getByName("jar")?.dependsOn("asciidoctor")
 
     val compileKotlin by getting(KotlinCompile::class) {
         kotlinOptions.jvmTarget = "1.8"
