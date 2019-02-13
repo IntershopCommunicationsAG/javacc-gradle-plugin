@@ -933,7 +933,6 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
 
         File parserFileExample1 = new File(testProjectDir, 'build/generated/javacc/example1/Example.java')
         File parserFileExample2 = new File(testProjectDir, 'build/generated/javacc/example2/Example.java')
-        File parserFileExample3 = new File(testProjectDir, 'build/generated/javacc/example3/Example.java')
         File parserFileExample4 = new File(testProjectDir, 'build/generated/javacc/example4/Example.java')
         File parserFileExample5 = new File(testProjectDir, 'build/generated/javacc/example5/Example.java')
         File parserFileExample6 = new File(testProjectDir, 'build/generated/javacc/example6/Example.java')
@@ -950,10 +949,6 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         result.output.contains(':javaccExample2')
         result.output.contains(':compileExample2Java')
         parserFileExample2.exists()
-
-        result.output.contains(':javaccExample3')
-        result.output.contains(':compileExample3Java')
-        parserFileExample3.exists()
 
         result.output.contains(':javaccExample4')
         result.output.contains(':compileExample4Java')
