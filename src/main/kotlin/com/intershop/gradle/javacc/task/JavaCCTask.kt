@@ -384,7 +384,7 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
 
     fun provideJavaCCArgs(javaCCArgs: Provider<List<String>>) = javaCCArgsProperty.set(javaCCArgs)
 
-    @get:Input
+    @get:Internal
     var jjTree: JJTree? = null
 
     @get:InputFiles
