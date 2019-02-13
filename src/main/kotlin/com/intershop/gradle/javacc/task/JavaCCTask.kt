@@ -377,6 +377,7 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
 
     private val javaCCArgsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
 
+    @get:Optional
     @get:Input
     var javaCCArgs: List<String>
         get() =  javaCCArgsProperty.get()
