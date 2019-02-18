@@ -63,7 +63,7 @@ val pluginId = "com.intershop.gradle.javacc"
 
 gradlePlugin {
     plugins {
-        create("scmversionPlugin") {
+        create("javaccPlugin") {
             id = pluginId
             implementationClass = "com.intershop.gradle.javacc.JavaCCPlugin"
             displayName = project.name
@@ -95,6 +95,8 @@ configure<AsciidoctorExtension> {
 tasks {
     withType<Test>().configureEach {
         systemProperty("intershop.gradle.versions", "5.2")
+
+        dependsOn("jar")
     }
 
     val copyAsciiDoc = register<Copy>("copyAsciiDoc") {
@@ -149,10 +151,6 @@ tasks {
 
         val jacocoTestReport by tasks
         jacocoTestReport.dependsOn("test")
-    }
-
-    withType<Test> {
-        dependsOn("jar")
     }
 
     getByName("bintrayUpload")?.dependsOn("asciidoctor")

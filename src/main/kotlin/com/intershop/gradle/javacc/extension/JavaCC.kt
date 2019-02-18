@@ -15,6 +15,7 @@
  */
 package com.intershop.gradle.javacc.extension
 
+import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Project
@@ -26,6 +27,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
+import org.gradle.util.ConfigureUtil
 import java.io.File
 import kotlin.reflect.KProperty
 
@@ -288,6 +290,11 @@ class JavaCC(project: Project, private val confname: String) : Named {
 
     fun jjtree(action: Action<in JJTree>) {
         action.execute(jjtree)
+        jjtree.isConfigured = true
+    }
+
+    fun jjtree(c: Closure<JJTree>) {
+        ConfigureUtil.configure(c, jjtree)
         jjtree.isConfigured = true
     }
 
