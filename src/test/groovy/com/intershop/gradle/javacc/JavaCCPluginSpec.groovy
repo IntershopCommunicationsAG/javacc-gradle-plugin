@@ -15,6 +15,7 @@
  */
 package com.intershop.gradle.javacc
 import com.intershop.gradle.javacc.extension.JavaCCExtension
+import com.intershop.gradle.javacc.task.JavaCCTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.testfixtures.ProjectBuilder
@@ -38,10 +39,27 @@ class JavaCCPluginSpec extends Specification {
         plugin.apply(project)
         project.extensions.javacc.configs {
             testconfiguration {
-                
             }
         }
         
+        then:
+        project.tasks.findByName("javaccTestconfiguration")
+        project.extensions.javacc.configs.testconfiguration.getSourceSetName() == SourceSet.MAIN_SOURCE_SET_NAME
+    }
+
+    def 'test configuration in JavaCC with JJTree'() {
+        when:
+        plugin.apply(project)
+        project.extensions.javacc.configs {
+            testconfiguration {
+                userTokenManager = false
+                jjtree {
+                    nodePrefix = "AST"
+                    nodePackage = "com.test"
+                }
+            }
+        }
+
         then:
         project.tasks.findByName("javaccTestconfiguration")
         project.extensions.javacc.configs.testconfiguration.getSourceSetName() == SourceSet.MAIN_SOURCE_SET_NAME
