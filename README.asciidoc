@@ -27,6 +27,15 @@ javacc {
         }
     }
 }
+
+// If you want a specific version of JavaCC
+dependencies {
+    javacc "net.java.dev.javacc:javacc:7.0.4"
+}
+
+repositories {
+    jcenter()
+}
 ----
 
 Then invoke as `gradle javacc`. That generates files under `build/generated/javacc/template/your/package/name/`, where `your/package/name` comes from `packageName` above, with dots replaced by a slash.
