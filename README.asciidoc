@@ -1,5 +1,5 @@
 = JavaCC Gradle Plugin
-:latestRevision: 3.0.1
+:latestRevision: 3.0.3
 :toc:
 :icons: font
 
@@ -9,7 +9,7 @@ NOTE: Version 3 of this plugin will only work with Gradle 5 and JDK 8.
 This plugin generates Java code from JavaCC and JJTree files. See https://javacc.java.net/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
 
 == Usage
-To apply the JavaCC Gradle Plugin to your projects, add the following in your build script:
+To apply the JavaCC Gradle Plugin to your projects, add the following in your `build.gradle` script:
 
 [source,groovy,subs="attributes"]
 ----
@@ -20,14 +20,16 @@ plugins {
 javacc {
     // configuration container for all javacc configurations
     configs {
-        template {
+        template { // That name ('template') serves as a configuration name, for example in the output folder path
+            // For available properties, see column "Property" below
             inputFile = file('jj/TemplateParser.jj')
-            packageName = 'com.corporate.internal.parser'
-            lookahead = '2'
+            packageName = 'your.package.name'
         }
     }
 }
 ----
+
+Then invoke as `gradle javacc`. That generates files under `build/generated/javacc/template/your/package/name/`, where `your/package/name` comes from `packageName` above, with dots replaced by a slash.
 
 This plugin applies code generation to a project. If the JavaBasePlugin is applied to the project, generated java
 sources will be added to the specified source set. Per default the main source set is used.
