@@ -17,37 +17,35 @@
 package com.intershop.gradle.javacc.task
 
 import org.gradle.api.GradleException
+import org.gradle.workers.WorkAction
 import org.javacc.jjtree.JJTree
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import javax.inject.Inject
 
-class JavaCCRunner @Inject constructor(private val outputDir: File,
-                                       private val inputFile: File,
-                                       private val javaCCParamList: List<String>,
-                                       private val jjTreeParamList: List<String>) : Runnable {
+abstract class JavaCCRunner : WorkAction<JavaCCRunnerParameters> {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(JavaCCRunner::class.java.name)
     }
 
-    override fun run() {
+    override fun execute() {
         var fileName = ""
         var jjTreeResult = 0
 
-        if(jjTreeParamList.isNotEmpty()) {
+        if(getParameters().jjTreeParamList.get().isNotEmpty()) {
             log.info("Start JJTree first ...")
 
             val jjTreeParams: MutableList<String> = mutableListOf()
             jjTreeParams.apply {
-                addAll(jjTreeParamList)
-                add("-OUTPUT_DIRECTORY=${outputDir.absolutePath}")
-                add(inputFile.absolutePath)
+                addAll(getParameters().jjTreeParamList.get())
+                add("-OUTPUT_DIRECTORY=${getParameters().outputDir.get().absolutePath}")
+                add(getParameters().inputFile.get().absolutePath)
             }
 
             //calculate filename for JavaCC
-            fileName = inputFile.name.replaceFirst("\\.[^\\.]+\$".toRegex(), ".jj")
+            fileName = getParameters().inputFile.get().name.replaceFirst("\\.[^\\.]+\$".toRegex(), ".jj")
 
             jjTreeResult = JJTree().main(jjTreeParams.toTypedArray())
         }
@@ -56,9 +54,12 @@ class JavaCCRunner @Inject constructor(private val outputDir: File,
 
             val javaCCParams: MutableList<String> = mutableListOf()
             javaCCParams.apply {
-                addAll(javaCCParamList)
-                add("-OUTPUT_DIRECTORY=${outputDir.absolutePath}")
-                add(if(fileName.isNotBlank()) { File(outputDir, fileName).absolutePath } else { inputFile.absolutePath } )
+                addAll(getParameters().javaCCParamList.get())
+                add("-OUTPUT_DIRECTORY=${getParameters().outputDir.get().absolutePath}")
+                add(if(fileName.isNotBlank())
+                    File(getParameters().outputDir.get(), fileName).absolutePath
+                    else
+                    getParameters().inputFile.get().absolutePath)
             }
 
             val javaccResult = org.javacc.parser.Main.mainProgram(javaCCParams.toTypedArray())

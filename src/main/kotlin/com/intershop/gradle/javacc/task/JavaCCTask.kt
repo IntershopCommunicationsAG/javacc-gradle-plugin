@@ -412,20 +412,21 @@ open class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExec
     fun generate() {
         val outDir: File = if(packageName.isBlank()) { outputDir } else { File(outputDir, packageName.replace('.', '/')) }
 
-        // start runner
-        workerExecutor.submit(JavaCCRunner::class.java) {
-            it.displayName = "Worker for Java source file creation by JavaCC."
-            it.setParams( outDir,
-                    inputFile,
-                    calculateJavaCCParameterList(),
-                    calculateJJTreeParameterList())
-            it.classpath(toolsclasspathfiles)
-            it.isolationMode = IsolationMode.CLASSLOADER
-            it.forkMode = ForkMode.AUTO
+        val workQueue = workerExecutor.processIsolation() {
+            it.classpath.setFrom(toolsclasspathfiles)
+
             if(internalForkOptionsAction != null) {
                 project.logger.debug("Add configured JavaForkOptions for JavaCC compile runner.")
-                (internalForkOptionsAction as Action<in JavaForkOptions>).execute(it.forkOptions)
+                internalForkOptionsAction?.execute(it.forkOptions)
             }
+        }
+
+        // start runner
+        workQueue.submit(JavaCCRunner::class.java) {
+            it.outputDir.set(outDir)
+            it.inputFile.set(inputFile)
+            it.javaCCParamList.set(calculateJavaCCParameterList())
+            it.jjTreeParamList.set(calculateJJTreeParameterList())
         }
 
         workerExecutor.await()
