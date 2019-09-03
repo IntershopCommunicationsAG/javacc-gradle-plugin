@@ -1,6 +1,5 @@
 import com.jfrog.bintray.gradle.BintrayExtension
-import org.asciidoctor.gradle.AsciidoctorExtension
-import org.asciidoctor.gradle.AsciidoctorTask
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Date
@@ -24,7 +23,7 @@ plugins {
     // project plugins
     `java-gradle-plugin`
     groovy
-    id("nebula.kotlin") version "1.3.21"
+    id("nebula.kotlin") version "1.3.31"
 
     // test coverage
     jacoco
@@ -36,13 +35,13 @@ plugins {
     `maven-publish`
 
     // intershop version plugin
-    id("com.intershop.gradle.scmversion") version "4.1.0"
+    id("com.intershop.gradle.scmversion") version "5.0.0"
 
     // plugin for documentation
-    id("org.asciidoctor.convert") version "1.5.10"
+    id("org.asciidoctor.jvm.convert") version "2.0.0"
 
     // documentation
-    id("org.jetbrains.dokka") version "0.9.17"
+    id("org.jetbrains.dokka") version "0.9.18"
 
     // plugin for publishing to Gradle Portal
     id("com.gradle.plugin-publish") version "0.10.1"
@@ -88,13 +87,9 @@ if (project.version.toString().endsWith("-SNAPSHOT")) {
     status = "snapshot'"
 }
 
-configure<AsciidoctorExtension> {
-    noDefaultRepositories = true
-}
-
 tasks {
     withType<Test>().configureEach {
-        systemProperty("intershop.gradle.versions", "5.2")
+        systemProperty("intershop.gradle.versions", "5.6")
 
         dependsOn("jar")
     }
@@ -121,12 +116,15 @@ tasks {
     withType<AsciidoctorTask> {
         dependsOn("copyAsciiDoc")
 
-        sourceDir = file("$buildDir/tmp/asciidoctorSrc")
+        setSourceDir(file("$buildDir/tmp/asciidoctorSrc"))
         sources(delegateClosureOf<PatternSet> {
             include("README.asciidoc")
         })
 
-        backends("html5", "docbook")
+        outputOptions {
+            setBackends(listOf("html5", "docbook"))
+        }
+
         options = mapOf( "doctype" to "article",
                 "ruby"    to "erubis")
         attributes = mapOf(
@@ -192,11 +190,11 @@ publishing {
             artifact(tasks.getByName("sourceJar"))
             artifact(tasks.getByName("javaDoc"))
 
-            artifact(File(buildDir, "asciidoc/html5/README.html")) {
+            artifact(File(buildDir, "docs/asciidoc/html5/README.html")) {
                 classifier = "reference"
             }
 
-            artifact(File(buildDir, "asciidoc/docbook/README.xml")) {
+            artifact(File(buildDir, "docs/asciidoc/docbook/README.xml")) {
                 classifier = "docbook"
             }
 
