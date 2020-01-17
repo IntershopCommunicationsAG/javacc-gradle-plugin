@@ -23,7 +23,7 @@ plugins {
     // project plugins
     `java-gradle-plugin`
     groovy
-    id("nebula.kotlin") version "1.3.50"
+    id("nebula.kotlin") version "1.3.61"
 
     // test coverage
     jacoco
@@ -38,10 +38,13 @@ plugins {
     id("com.intershop.gradle.scmversion") version "6.0.0"
 
     // plugin for documentation
-    id("org.asciidoctor.jvm.convert") version "2.3.0"
+    id("org.asciidoctor.jvm.convert") version "2.4.0"
 
     // documentation
     id("org.jetbrains.dokka") version "0.10.0"
+
+    // code analysis for kotlin
+    id("io.gitlab.arturbosch.detekt") version "1.4.0"
 
     // plugin for publishing to Gradle Portal
     id("com.gradle.plugin-publish") version "0.10.1"
@@ -87,9 +90,14 @@ if (project.version.toString().endsWith("-SNAPSHOT")) {
     status = "snapshot'"
 }
 
+detekt {
+    input = files("src/main/kotlin")
+    config = files("detekt.yml")
+}
+
 tasks {
     withType<Test>().configureEach {
-        systemProperty("intershop.gradle.versions", "5.6.4, 6.0")
+        systemProperty("intershop.gradle.versions", "6.0, 6.1")
 
         dependsOn("jar")
     }
@@ -252,7 +260,7 @@ bintray {
 }
 
 dependencies {
-
+    implementation(gradleKotlinDsl())
     implementation("net.java.dev.javacc:javacc:4.2")
 
     testImplementation("commons-io:commons-io:2.2")
