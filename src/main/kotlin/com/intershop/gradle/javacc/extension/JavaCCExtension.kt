@@ -14,49 +14,77 @@
  * limitations under the License.
  */
 @file:Suppress("UnstableApiUsage")
-
 package com.intershop.gradle.javacc.extension
 
-import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import javax.inject.Inject
 
+/**
+ * JavaCC main extension of this plugin.
+ */
 @Suppress("UnstableApiUsage")
-open class JavaCCExtension (project: Project) {
+abstract class JavaCCExtension {
 
     companion object {
-        // names for the plugin
+        /**
+         * Extension name of plugin.
+         */
         const val JAVACC_EXTENSION_NAME = "javacc"
+
+        /**
+         * Task group name of jaxb code generation.
+         */
         const val JAVACC_GROUP_NAME = "JAVACC Code Generation"
 
+        /**
+         * Dependency configuration name for JavaCC code generation.
+         */
         const val JAVACC_CONFIGURATION_NAME = "javacc"
 
-        // default versions
+        /**
+         * Default version of JavaCC library.
+         */
         const val JAVACC_VERSION = "4.2"
 
+        /**
+         * Default output path of all generation tasks.
+         **/
         const val CODEGEN_OUTPUTPATH = "generated/javacc"
     }
 
-    val configs: NamedDomainObjectContainer<JavaCC> = project.container(JavaCC::class.java, JavaCCFactory(project))
+    /**
+     * Inject service of ObjectFactory (See "Service injection" in Gradle documentation.
+     */
+    @get:Inject
+    abstract val objectFactory: ObjectFactory
 
-    fun configs(configureAction: Action<in NamedDomainObjectContainer<JavaCC>>) {
-        configureAction.execute(configs)
-    }
+    /**
+     * Config container for JavaCC code generation.
+     */
+    val configs: NamedDomainObjectContainer<JavaCC> = objectFactory.domainObjectContainer(JavaCC::class.java)
 
-    // javacc version configuration
     @Suppress("UnstableApiUsage")
-    private val javaCCVersionProperty: Property<String> = project.objects.property(String::class.java)
+    private val javaCCVersionProperty: Property<String> = objectFactory.property(String::class.java)
 
     init {
         javaCCVersionProperty.set(JAVACC_VERSION)
     }
 
-    // javaCCVersion parameter
+    /**
+     * Provider for version configuration of JavaCC lib.
+     */
     val javaCCVersionProvider: Provider<String>
         get() = javaCCVersionProperty
 
+    /**
+     * Version configuration property of
+     * JavaCC lib.
+     *
+     * @property javaCCVersion
+     */
     var javaCCVersion: String
         get() = javaCCVersionProperty.get()
         set(value) = javaCCVersionProperty.set(value)

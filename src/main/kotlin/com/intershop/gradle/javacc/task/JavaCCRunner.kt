@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.intershop.gradle.javacc.task
 
 import org.gradle.api.GradleException
@@ -22,11 +21,16 @@ import org.javacc.jjtree.JJTree
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import javax.inject.Inject
 
+/**
+ * Worker container for code generation.
+ */
 abstract class JavaCCRunner : WorkAction<JavaCCRunnerParameters> {
 
     companion object {
+        /**
+         * Logger for JavaCCRunner.
+         */
         val log: Logger = LoggerFactory.getLogger(JavaCCRunner::class.java.name)
     }
 

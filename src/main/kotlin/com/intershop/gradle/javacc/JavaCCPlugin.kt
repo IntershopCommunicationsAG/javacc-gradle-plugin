@@ -16,26 +16,36 @@
 package com.intershop.gradle.javacc
 
 import com.intershop.gradle.javacc.extension.JavaCCExtension
+import com.intershop.gradle.javacc.extension.JavaCCExtension.Companion.JAVACC_EXTENSION_NAME
 import com.intershop.gradle.javacc.task.JavaCCTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginConvention
 
+
 /**
- * Plugin Class
+ * Plugin Class implementation.
  */
 class JavaCCPlugin : Plugin<Project> {
 
     companion object {
+        /**
+         * Task description for JavaCC tasks.
+         */
         const val TASKDESCRIPTION = "Generate Java code with JAVA Compiler Compiler (JavaCC)"
+
+        /**
+         * Name of the main tasks of all javaCC tasks.
+         */
         const val TASKNAME = "javacc"
     }
 
     override fun apply(project: Project) {
         with(project) {
-            logger.info("JavaCC plugin adds extension {} to {}", JavaCCExtension.JAVACC_EXTENSION_NAME, name)
-            val extension = extensions.findByType(JavaCCExtension::class.java) ?: extensions.create(JavaCCExtension.JAVACC_EXTENSION_NAME, JavaCCExtension::class.java, this)
+            logger.info("JavaCC plugin adds extension {} to {}", JAVACC_EXTENSION_NAME, name)
+            val extension = extensions.findByType(JavaCCExtension::class.java) ?:
+                                        extensions.create(JAVACC_EXTENSION_NAME, JavaCCExtension::class.java)
 
             addJavaCCConfiguration(this, extension)
 
@@ -44,7 +54,7 @@ class JavaCCPlugin : Plugin<Project> {
     }
 
     /**
-     * Configure task for javaCC code generation
+     * Configure task for javaCC code generation.
      *
      * @param project       project to configure
      * @param extension     extension of this plugin
