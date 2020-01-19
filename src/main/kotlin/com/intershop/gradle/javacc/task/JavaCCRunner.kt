@@ -38,18 +38,18 @@ abstract class JavaCCRunner : WorkAction<JavaCCRunnerParameters> {
         var fileName = ""
         var jjTreeResult = 0
 
-        if(getParameters().jjTreeParamList.get().isNotEmpty()) {
+        if(parameters.jjTreeParamList.get().isNotEmpty()) {
             log.info("Start JJTree first ...")
 
             val jjTreeParams: MutableList<String> = mutableListOf()
             jjTreeParams.apply {
-                addAll(getParameters().jjTreeParamList.get())
-                add("-OUTPUT_DIRECTORY=${getParameters().outputDir.get().absolutePath}")
-                add(getParameters().inputFile.get().absolutePath)
+                addAll(parameters.jjTreeParamList.get())
+                add("-OUTPUT_DIRECTORY=${parameters.outputDir.get().absolutePath}")
+                add(parameters.inputFile.get().absolutePath)
             }
 
             //calculate filename for JavaCC
-            fileName = getParameters().inputFile.get().name.replaceFirst("\\.[^\\.]+\$".toRegex(), ".jj")
+            fileName = parameters.inputFile.get().name.replaceFirst("\\.[^\\.]+\$".toRegex(), ".jj")
 
             jjTreeResult = JJTree().main(jjTreeParams.toTypedArray())
         }
@@ -58,12 +58,12 @@ abstract class JavaCCRunner : WorkAction<JavaCCRunnerParameters> {
 
             val javaCCParams: MutableList<String> = mutableListOf()
             javaCCParams.apply {
-                addAll(getParameters().javaCCParamList.get())
-                add("-OUTPUT_DIRECTORY=${getParameters().outputDir.get().absolutePath}")
+                addAll(parameters.javaCCParamList.get())
+                add("-OUTPUT_DIRECTORY=${parameters.outputDir.get().absolutePath}")
                 add(if(fileName.isNotBlank())
-                    File(getParameters().outputDir.get(), fileName).absolutePath
+                    File(parameters.outputDir.get(), fileName).absolutePath
                     else
-                    getParameters().inputFile.get().absolutePath)
+                    parameters.inputFile.get().absolutePath)
             }
 
             val javaccResult = org.javacc.parser.Main.mainProgram(javaCCParams.toTypedArray())

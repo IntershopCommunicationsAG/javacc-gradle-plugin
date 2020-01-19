@@ -16,7 +16,6 @@
 package com.intershop.gradle.javacc.extension
 
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 
 /**

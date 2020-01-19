@@ -106,14 +106,14 @@ class JavaCCPlugin : Plugin<Project> {
                     jjTree = javaCC.jjtree
 
                     afterEvaluate {
-                        plugins.withType(JavaBasePlugin::class.java, {
+                        plugins.withType(JavaBasePlugin::class.java) {
                             val javaPluginConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
-                            javaPluginConvention.sourceSets.matching( {
+                            javaPluginConvention.sourceSets.matching {
                                 it.name == javaCC.sourceSetName
-                            }).forEach {
+                            }.forEach {
                                 it.java.srcDir(this@apply.outputs)
                             }
-                        })
+                        }
                     }
 
                     javaCCMain.dependsOn(this)

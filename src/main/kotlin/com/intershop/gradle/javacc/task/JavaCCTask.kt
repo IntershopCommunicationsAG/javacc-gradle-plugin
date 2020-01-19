@@ -801,7 +801,7 @@ abstract class JavaCCTask @Inject constructor(private val workerExecutor: Worker
         } else {
             File(outputDir, packageName.replace('.', '/')) }
 
-        val workQueue = workerExecutor.processIsolation() {
+        val workQueue = workerExecutor.processIsolation {
             it.classpath.setFrom(toolsclasspathfiles)
 
             if(internalForkOptionsAction != null) {
