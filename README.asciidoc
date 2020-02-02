@@ -6,7 +6,7 @@
 NOTE: Version 4 of this plugin will only work with Gradle 6 and JDK 8.
 
 == Summary
-This plugin generates Java code from JavaCC and JJTree files. See https://javacc.java.net/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
+This plugin generates Java code from JavaCC and JJTree files. See https://javacc.github.io/javacc/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
 
 == Usage
 To apply the JavaCC Gradle Plugin to your projects, add the following in your build script:
