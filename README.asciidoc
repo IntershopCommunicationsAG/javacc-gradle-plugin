@@ -16,7 +16,7 @@ To apply the JavaCC Gradle Plugin to your projects, add the following in your bu
 <summary>Groovy</summary>
 ++++
 
-[source,kotlin]
+[source,groovy]
 [subs=+attributes]
 .build.gradle
 ----
@@ -44,7 +44,7 @@ javacc {
 <details>
 <summary>Kotlin</summary>
 ++++
-[source,groovy]
+[source,kotlin]
 [subs=+attributes]
 .build.gradle.kts
 ----
