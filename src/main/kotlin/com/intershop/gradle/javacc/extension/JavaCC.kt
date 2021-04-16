@@ -29,6 +29,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.SourceSet
 import org.gradle.util.ConfigureUtil
 import java.io.File
@@ -38,19 +39,8 @@ import javax.inject.Inject
  * Configuration container for special JavaCC
  * code generation.
  */
-abstract class JavaCC(val name: String) {
-
-    /**
-     * Inject service of ObjectFactory (See "Service injection" in Gradle documentation.
-     */
-    @get:Inject
-    abstract val objectFactory: ObjectFactory
-
-    /**
-     * Inject service of ProjectLayout (See "Service injection" in Gradle documentation.
-     */
-    @get:Inject
-    abstract val layout: ProjectLayout
+open class JavaCC @Inject constructor(objectFactory: ObjectFactory,
+                                          projectLayout: ProjectLayout, @Internal val name: String) {
 
     private val outputDirProperty: DirectoryProperty = objectFactory.directoryProperty()
     private val inputFileProperty: RegularFileProperty = objectFactory.fileProperty()
@@ -92,7 +82,8 @@ abstract class JavaCC(val name: String) {
     private val argumentsProperty : ListProperty<String> = objectFactory.listProperty(String::class.java)
 
     init {
-        outputDirProperty.set(layout.buildDirectory.dir("${CODEGEN_OUTPUTPATH}/${name.replace(' ', '_')}"))
+        outputDirProperty.set(
+            projectLayout.buildDirectory.dir("${CODEGEN_OUTPUTPATH}/${name.replace(' ', '_')}"))
         sourceSetNameProperty.set(SourceSet.MAIN_SOURCE_SET_NAME)
     }
 

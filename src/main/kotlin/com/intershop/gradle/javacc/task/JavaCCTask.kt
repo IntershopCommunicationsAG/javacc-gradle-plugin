@@ -17,7 +17,6 @@ package com.intershop.gradle.javacc.task
 
 import com.intershop.gradle.javacc.extension.JJTree
 import com.intershop.gradle.javacc.extension.JavaCCExtension
-import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -35,7 +34,6 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.process.JavaForkOptions
 import org.gradle.workers.WorkerExecutor
 import java.io.File
 import javax.inject.Inject
@@ -46,13 +44,8 @@ import javax.inject.Inject
  *
  * @constructor Creates a task with a worker.
  */
-abstract class JavaCCTask @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask(){
-
-    /**
-     * Inject service of ObjectFactory (See "Service injection" in Gradle documentation.
-     */
-    @get:Inject
-    abstract val objectFactory: ObjectFactory
+abstract class JavaCCTask @Inject constructor(objectFactory: ObjectFactory,
+                                              private val workerExecutor: WorkerExecutor) : DefaultTask(){
     
     private val outputDirProperty: DirectoryProperty = objectFactory.directoryProperty()
 
@@ -779,19 +772,6 @@ abstract class JavaCCTask @Inject constructor(private val workerExecutor: Worker
     }
 
     /**
-     * Java fork options for the Java task.
-     */
-    private var internalForkOptionsAction: Action<in JavaForkOptions>? = null
-
-    /**
-     * Set the fork options for the code
-     * generation java process.
-     */
-    fun forkOptions(forkOptionsAction: Action<in JavaForkOptions>) {
-        internalForkOptionsAction = forkOptionsAction
-    }
-
-    /**
      * Task aktion for code generation.
      */
     @TaskAction
@@ -801,13 +781,8 @@ abstract class JavaCCTask @Inject constructor(private val workerExecutor: Worker
         } else {
             File(outputDir, packageName.replace('.', '/')) }
 
-        val workQueue = workerExecutor.processIsolation {
+        val workQueue = workerExecutor.classLoaderIsolation {
             it.classpath.setFrom(toolsclasspathfiles)
-
-            if(internalForkOptionsAction != null) {
-                project.logger.debug("Add configured JavaForkOptions for JavaCC compile runner.")
-                internalForkOptionsAction?.execute(it.forkOptions)
-            }
         }
 
         // start runner

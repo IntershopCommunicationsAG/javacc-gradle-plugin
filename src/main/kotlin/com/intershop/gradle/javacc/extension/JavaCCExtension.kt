@@ -26,7 +26,7 @@ import javax.inject.Inject
  * JavaCC main extension of this plugin.
  */
 @Suppress("UnstableApiUsage")
-abstract class JavaCCExtension {
+open class JavaCCExtension @Inject constructor(objectFactory: ObjectFactory) {
 
     companion object {
         /**
@@ -54,12 +54,6 @@ abstract class JavaCCExtension {
          **/
         const val CODEGEN_OUTPUTPATH = "generated/javacc"
     }
-
-    /**
-     * Inject service of ObjectFactory (See "Service injection" in Gradle documentation.
-     */
-    @get:Inject
-    abstract val objectFactory: ObjectFactory
 
     /**
      * Config container for JavaCC code generation.
