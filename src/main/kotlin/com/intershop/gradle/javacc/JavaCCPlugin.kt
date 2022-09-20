@@ -21,7 +21,7 @@ import com.intershop.gradle.javacc.task.JavaCCTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 
 
 /**
@@ -107,8 +107,7 @@ class JavaCCPlugin : Plugin<Project> {
 
                     afterEvaluate {
                         plugins.withType(JavaBasePlugin::class.java) {
-                            val javaPluginConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
-                            javaPluginConvention.sourceSets.matching {
+                            project.extensions.getByType(JavaPluginExtension::class.java).sourceSets.matching {
                                 it.name == javaCC.sourceSetName
                             }.forEach {
                                 it.java.srcDir(this@apply.outputs)

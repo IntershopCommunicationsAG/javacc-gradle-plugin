@@ -72,7 +72,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -150,7 +150,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -259,7 +259,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -322,7 +322,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -412,7 +412,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -477,7 +477,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -548,7 +548,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
             
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -624,7 +624,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
             
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -768,7 +768,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -853,7 +853,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
             
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -956,7 +956,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -1060,7 +1060,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             }
             
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 

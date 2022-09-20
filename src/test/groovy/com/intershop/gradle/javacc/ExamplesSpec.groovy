@@ -71,7 +71,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -147,7 +147,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -252,7 +252,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccEg4.dependsOn copySrcEg4
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -313,7 +313,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -399,7 +399,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccJavaGrammar15.dependsOn copySrc15
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -462,7 +462,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -529,7 +529,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -601,7 +601,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccCalcInput.dependsOn copySrc
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -737,7 +737,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -818,7 +818,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccInterpreter.dependsOn copySrc
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -919,7 +919,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
@@ -1019,12 +1019,12 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccVtransformer.dependsOn copySrc
 
             repositories {
-                jcenter()
+                mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
