@@ -1,5 +1,4 @@
 import org.asciidoctor.gradle.jvm.AsciidoctorTask
-import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /*
@@ -167,10 +166,10 @@ tasks {
 
     withType<JacocoReport> {
         reports {
-            xml.getRequired().set(true)
-            html.getRequired().set(true)
+            xml.required.set(true)
+            html.required.set(true)
 
-            html.getOutputLocation().set( File(project.buildDir, "jacocoHtml") )
+            html.outputLocation.set( File(project.buildDir, "jacocoHtml") )
         }
 
         val jacocoTestReport by tasks
@@ -179,7 +178,7 @@ tasks {
 
     getByName("jar").dependsOn("asciidoctor")
 
-    val compileKotlin by getting(KotlinCompile::class) {
+    withType<KotlinCompile> {
         kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
@@ -273,7 +272,7 @@ dependencies {
 
     implementation("net.java.dev.javacc:javacc:4.2")
 
-    testImplementation("commons-io:commons-io:2.2")
+    testImplementation("commons-io:commons-io:2.7")
     testImplementation("com.intershop.gradle.test:test-gradle-plugin:4.1.2")
     testImplementation(gradleTestKit())
 }
