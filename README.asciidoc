@@ -96,6 +96,7 @@ This plugin adds an extension *`javacc`* to the project.
 === Methods
 [cols="20%,15%,65%", width="95%", options="header"]
 |===
+|Method       | Type   | Description
 |*configs*        |<<javaCC, JavaCC>>  | This contains all Java code generation configurations.
 |===
 
