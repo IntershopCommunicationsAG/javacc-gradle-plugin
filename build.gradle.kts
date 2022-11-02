@@ -22,7 +22,7 @@ plugins {
     `java-gradle-plugin`
     groovy
 
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.7.20"
 
     // test coverage
     jacoco
@@ -87,8 +87,10 @@ pluginBundle {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+        vendor.set(JvmVendorSpec.ADOPTIUM)
+    }
 }
 
 // set correct project status
@@ -101,13 +103,15 @@ detekt {
     config = files("detekt.yml")
 }
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+kotlin {
+    jvmToolchain {
+        this.languageVersion.set(JavaLanguageVersion.of(11))
     }
+}
 
+tasks {
     withType<Test>().configureEach {
-        systemProperty("intershop.gradle.versions", "7.2,7.5.1")
+        systemProperty("intershop.gradle.versions", "7.5.1")
 
         testLogging {
             showStandardStreams = true
@@ -177,10 +181,6 @@ tasks {
     }
 
     getByName("jar").dependsOn("asciidoctor")
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
 
     dokkaJavadoc.configure {
         outputDirectory.set(buildDir.resolve("dokka"))
