@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
+pluginRepositories {
+    maven {
+        url 'https://repo.maven.apache.org/maven2/'
+    }
+    gradlePluginPortal()
+}
+
 rootProject.name = 'javacc-gradle-plugin'
