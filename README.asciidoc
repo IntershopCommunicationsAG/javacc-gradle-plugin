@@ -1,9 +1,9 @@
 = JavaCC Gradle Plugin
-:latestRevision: 4.0.0
+:latestRevision: 5.0.0
 :toc:
 :icons: font
 
-NOTE: Version 4 of this plugin will only work with Gradle 6 and JDK 8.
+NOTE: Version 5 of this plugin will only work with Gradle 8.5 and JDK 17.
 
 == Summary
 This plugin generates Java code from JavaCC and JJTree files. See https://javacc.github.io/javacc/[Java Compiler Compiler tm (JavaCC tm) - The Java Parser Generator].
@@ -71,7 +71,7 @@ javacc {
 This plugin applies code generation to a project. If the JavaBasePlugin is applied to the project, generated java
 sources will be added to the specified source set. Per default the main source set is used.
 
-IMPORTANT: This plugin uses the version 4.2. It is possible to overwrite the project dependency configuration 'javacc', if you want use an other library for JavaCC code generation.
+IMPORTANT: This plugin uses `net.java.dev.javacc:javacc:7.0.13`. It is possible to overwrite the project dependency configuration 'javacc', if you want to use another library for JavaCC code generation.
 
 == Tasks
 The JavaCC Gradle plugin adds one task `javacc` to the project. This task depends on all other plugin task. It is a task added for each configuration.

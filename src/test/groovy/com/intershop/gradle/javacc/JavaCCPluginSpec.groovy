@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 package com.intershop.gradle.javacc
-import com.intershop.gradle.javacc.extension.JavaCCExtension
-import com.intershop.gradle.javacc.task.JavaCCTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
 import org.gradle.testfixtures.ProjectBuilder

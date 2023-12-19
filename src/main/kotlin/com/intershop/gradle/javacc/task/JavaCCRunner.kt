@@ -60,10 +60,11 @@ abstract class JavaCCRunner : WorkAction<JavaCCRunnerParameters> {
             javaCCParams.apply {
                 addAll(parameters.javaCCParamList.get())
                 add("-OUTPUT_DIRECTORY=${parameters.outputDir.get().absolutePath}")
-                add(if(fileName.isNotBlank())
+                add(if (fileName.isNotBlank()) {
                     File(parameters.outputDir.get(), fileName).absolutePath
-                    else
-                    parameters.inputFile.get().absolutePath)
+                } else {
+                    parameters.inputFile.get().absolutePath
+                })
             }
 
             val javaccResult = org.javacc.parser.Main.mainProgram(javaCCParams.toTypedArray())

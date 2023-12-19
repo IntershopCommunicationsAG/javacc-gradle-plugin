@@ -25,7 +25,6 @@ import javax.inject.Inject
 /**
  * JavaCC main extension of this plugin.
  */
-@Suppress("UnstableApiUsage")
 open class JavaCCExtension @Inject constructor(objectFactory: ObjectFactory) {
 
     companion object {
@@ -60,11 +59,10 @@ open class JavaCCExtension @Inject constructor(objectFactory: ObjectFactory) {
      */
     val configs: NamedDomainObjectContainer<JavaCC> = objectFactory.domainObjectContainer(JavaCC::class.java)
 
-    @Suppress("UnstableApiUsage")
     private val javaCCVersionProperty: Property<String> = objectFactory.property(String::class.java)
 
     init {
-        javaCCVersionProperty.set(JAVACC_VERSION)
+        javaCCVersionProperty.convention(JAVACC_VERSION)
     }
 
     /**

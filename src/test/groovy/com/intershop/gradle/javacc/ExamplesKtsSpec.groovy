@@ -541,7 +541,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccToy").dependsOn(copySrc)
 
                 register("testExec", JavaExec::class) {
-                    main = "ToyParser"
+                    mainClass = "ToyParser"
                     classpath = sourceSets["main"].runtimeClasspath
                     args((File(projectDir, "example/divide.toy")).absolutePath, (File(projectDir, "example/divide.java")).absolutePath)
                 }
@@ -760,7 +760,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccObfuscatorMap").dependsOn(copySrc)
 
                 register("testExec", JavaExec::class) {
-                    main = "Main"
+                    mainClass = "Main"
                     classpath = sourceSets["main"].runtimeClasspath
                     workingDir = projectDir
                     args("input", "output", "config/maps", "config/nochangeids", "config/useids")
