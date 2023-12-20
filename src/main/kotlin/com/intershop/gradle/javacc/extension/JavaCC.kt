@@ -18,7 +18,6 @@ package com.intershop.gradle.javacc.extension
 import com.intershop.gradle.javacc.extension.JavaCCExtension.Companion.CODEGEN_OUTPUTPATH
 import com.intershop.gradle.javacc.utils.getValue
 import com.intershop.gradle.javacc.utils.setValue
-import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -31,8 +30,8 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.SourceSet
-import org.gradle.util.ConfigureUtil
 import java.io.File
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -659,16 +658,6 @@ open class JavaCC @Inject constructor(objectFactory: ObjectFactory,
     }
 
     /**
-     * Configures jjtree with a closure.
-     *
-     * @param c
-     */
-    fun jjtree(c: Closure<JJTree>) {
-        ConfigureUtil.configure(c, jjtree)
-        jjtree.isConfigured = true
-    }
-
-    /**
      * Calculate the task name.
      * @return task name
      */
@@ -677,6 +666,6 @@ open class JavaCC @Inject constructor(objectFactory: ObjectFactory,
     }
 
     private fun String.toCamelCase() : String {
-        return split(" ").joinToString("") { it.capitalize() }
+        return split(" ").joinToString("") { str -> str.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
     }
 }
