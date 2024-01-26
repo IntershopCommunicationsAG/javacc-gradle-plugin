@@ -284,6 +284,10 @@ tasks.withType(com.intershop.gradle.javacc.task.JavaCCTask) {
 
 ----
 
+== Contribute
+
+See link:https://github.com/IntershopCommunicationsAG/.github/blob/main/CONTRIBUTE.asciidoc[here] for details.
+
 == License
 
 Copyright 2014-2019 Intershop Communications.
