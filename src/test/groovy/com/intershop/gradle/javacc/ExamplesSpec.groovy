@@ -220,9 +220,9 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 eg4
             }
 
-            def javaCCOutDirEg2 = new File(project.buildDir, 'generated/javacc/eg2')
-            def javaCCOutDirEg3 = new File(project.buildDir, 'generated/javacc/eg3')
-            def javaCCOutDirEg4 = new File(project.buildDir, 'generated/javacc/eg4')
+            def javaCCOutDirEg2 = project.layout.buildDirectory.file('generated/javacc/eg2').get().asFile
+            def javaCCOutDirEg3 = project.layout.buildDirectory.file('generated/javacc/eg3').get().asFile
+            def javaCCOutDirEg4 = project.layout.buildDirectory.file('generated/javacc/eg4').get().asFile
 
             javacc {
                 configs {
@@ -393,7 +393,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 javaGrammar15
             }
 
-            def javaCCOutDir15 = new File(project.buildDir, 'generated/javacc/javaGrammar15')
+            def javaCCOutDir15 = project.layout.buildDirectory.file('generated/javacc/javaGrammar15').get().asFile
 
             javacc {
                 configs {
@@ -543,7 +543,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 }
             }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/toy')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/toy').get().asFile
 
             javacc {
                 configs {
@@ -563,7 +563,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccToy.dependsOn copySrc
 
             task testExec(type: JavaExec) {
-                main = 'ToyParser'
+                mainClass = 'ToyParser'
                 classpath = sourceSets.main.runtimeClasspath
                 args((new File(projectDir, 'example/divide.toy')).absolutePath, (new File(projectDir, 'example/divide.java')).absolutePath)
             }
@@ -627,7 +627,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 }
             }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/calcInput')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/calcInput').get().asFile
 
             javacc {
                 configs {
@@ -691,7 +691,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 }
             }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/calcInput')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/calcInput').get().asFile
 
             javacc {
                 configs {
@@ -756,7 +756,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 }
             }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/obfuscator')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/obfuscator').get().asFile
 
             javacc {
                 configs {
@@ -785,7 +785,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccObfuscatorMap.dependsOn copySrc
 
             task testExec(type: JavaExec) {
-                main = 'Main'
+                mainClass = 'Main'
                 classpath = sourceSets.main.runtimeClasspath
                 workingDir projectDir
                 args('input', 'output', 'config/maps', 'config/nochangeids', 'config/useids')
@@ -858,7 +858,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 }
             }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/interpreter')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/interpreter').get().asFile
 
             javacc {
                 configs {
@@ -1069,7 +1069,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 }
             }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/vtransformer')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/vtransformer').get().asFile
 
             javacc {
                 configs {

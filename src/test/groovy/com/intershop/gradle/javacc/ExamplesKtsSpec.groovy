@@ -221,9 +221,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 register("eg4")
             }
 
-            val javaCCOutDirEg2 = File(project.buildDir, "generated/javacc/eg2")
-            val javaCCOutDirEg3 = File(project.buildDir, "generated/javacc/eg3")
-            val javaCCOutDirEg4 = File(project.buildDir, "generated/javacc/eg4")
+            val javaCCOutDirEg2 = project.layout.buildDirectory.file("generated/javacc/eg2").get().asFile
+            val javaCCOutDirEg3 = project.layout.buildDirectory.file("generated/javacc/eg3").get().asFile
+            val javaCCOutDirEg4 = project.layout.buildDirectory.file("generated/javacc/eg4").get().asFile
 
             javacc {
                 configs {
@@ -396,7 +396,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 register("javaGrammar15")
             }
 
-            val javaCCOutDir15 = File(project.buildDir, "generated/javacc/javaGrammar15")
+            val javaCCOutDir15 = project.layout.buildDirectory.file("generated/javacc/javaGrammar15").get().asFile
 
             javacc {
                 configs {
@@ -548,7 +548,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/toy")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/toy").get().asFile
 
             javacc {
                 configs {
@@ -634,7 +634,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/calcInput")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/calcInput").get().asFile
 
             javacc {
                 configs {
@@ -700,7 +700,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/calcInput")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/calcInput").get().asFile
 
             javacc {
                 configs {
@@ -767,7 +767,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/obfuscator")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/obfuscator").get().asFile
 
             javacc {
                 configs {
@@ -871,7 +871,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/interpreter")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/interpreter").get().asFile
 
             javacc {
                 configs {
@@ -1084,7 +1084,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/vtransformer")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/vtransformer").get().asFile
 
             javacc {
                 configs {
