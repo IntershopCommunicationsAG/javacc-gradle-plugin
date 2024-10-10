@@ -20,6 +20,13 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExamplesSpec extends AbstractIntegrationGroovySpec {
 
+    private String TASK_JAVA_COMPILE_CONFIGURATION = """
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Xlint:deprecation']
+                options.compilerArgs += ['-Xlint:unchecked']
+            }
+    """.stripIndent()
+
     def 'Test Simple Examples'() {
         given:
         copyResources('examples/SimpleExamples/jj', 'jj')
@@ -69,6 +76,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -145,6 +154,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -251,6 +262,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccEg3.dependsOn copySrcEg3
             javaccEg4.dependsOn copySrcEg4
 
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+
             repositories {
                 mavenCentral()
             }
@@ -311,6 +324,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -395,6 +410,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 from 'jjSrc'
                 into javaCCOutDir15
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             javaccJavaGrammar15.dependsOn copySrc15
 
@@ -460,6 +477,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -527,6 +546,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 classpath = sourceSets.main.runtimeClasspath
                 args((new File(projectDir, 'example/divide.toy')).absolutePath, (new File(projectDir, 'example/divide.java')).absolutePath)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -599,6 +620,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccCalcInput.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -658,6 +681,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccCalcInput.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -735,6 +760,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 workingDir projectDir
                 args('input', 'output', 'config/maps', 'config/nochangeids', 'config/useids')
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -816,6 +843,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccInterpreter.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -917,6 +946,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -1017,6 +1048,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccVtransformer.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()

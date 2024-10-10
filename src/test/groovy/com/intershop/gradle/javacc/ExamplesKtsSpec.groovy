@@ -20,6 +20,15 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
 
+    private String TASK_JAVA_COMPILE_CONFIGURATION = """
+            tasks {
+                withType<JavaCompile> {
+                    options.compilerArgs.add("-Xlint:deprecation")
+                    options.compilerArgs.add("-Xlint:unchecked")
+                }
+            }
+    """.stripIndent()
+
     def 'Test Simple Examples'() {
         given:
         copyResources('examples/SimpleExamples/jj', 'jj')
@@ -70,6 +79,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -148,6 +159,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -257,6 +270,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccEg3").dependsOn(copySrcEg3)
                 getByName("javaccEg4").dependsOn(copySrcEg4)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -320,6 +335,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -410,6 +427,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             
                 getByName("javaccJavaGrammar15").dependsOn(copySrc15)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -475,6 +494,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -546,6 +567,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     args((File(projectDir, "example/divide.toy")).absolutePath, (File(projectDir, "example/divide.java")).absolutePath)
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
             
             repositories {
                 mavenCentral()
@@ -623,6 +646,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccCalcInput").dependsOn(copySrc)
             }
             
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+            
             repositories {
                 mavenCentral()
             }
@@ -685,6 +710,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
 
                 getByName("javaccCalcInput").dependsOn(copySrc)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
             
             repositories {
                 mavenCentral()
@@ -766,6 +793,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     args("input", "output", "config/maps", "config/nochangeids", "config/useids")
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -851,6 +880,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
 
                 getByName("javaccInterpreter").dependsOn(copySrc)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
             
             repositories {
                 mavenCentral()
@@ -954,6 +985,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -1058,6 +1091,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
 
                 getByName("javaccVtransformer").dependsOn(copySrc)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
             
             repositories {
                 mavenCentral()
