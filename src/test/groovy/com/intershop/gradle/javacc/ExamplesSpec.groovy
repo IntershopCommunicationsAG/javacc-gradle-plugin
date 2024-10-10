@@ -88,7 +88,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['simple1Classes', 'simple2Classes', 'simple3Classes', 'idListClasses', 'nL_XlatorClasses', '-s']
+        List<String> args = ['simple1Classes', 'simple2Classes', 'simple3Classes', 'idListClasses', 'nL_XlatorClasses', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -169,7 +169,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['digestClasses', 'faqClasses', '-s']
+        List<String> args = ['digestClasses', 'faqClasses', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -279,7 +279,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['eg1Classes', 'eg2Classes', 'eg3Classes', 'eg4Classes','-s']
+        List<String> args = ['eg1Classes', 'eg2Classes', 'eg3Classes', 'eg4Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -345,7 +345,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -436,7 +436,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['javaGrammar102Classes', 'javaGrammar102LSClasses', 'javaGrammar11Classes', 'javaGrammar11noLAClasses', 'javaGrammar15Classes', '-s']
+        List<String> args = ['javaGrammar102Classes', 'javaGrammar102LSClasses', 'javaGrammar11Classes', 'javaGrammar11noLAClasses', 'javaGrammar15Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -504,7 +504,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -576,7 +576,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -591,7 +591,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         parserFile.exists()
 
         when:
-        List<String> testArgs = ['testExec', '-s']
+        List<String> testArgs = ['testExec', '-s', '--warning-mode', 'all']
 
         getPreparedGradleRunner()
                 .withArguments(testArgs)
@@ -653,7 +653,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -717,7 +717,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -799,7 +799,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -821,7 +821,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         javaParserFile.exists()
 
         when:
-        List<String> testArgs = ['testExec', '-s']
+        List<String> testArgs = ['testExec', '-s', '--warning-mode', 'all']
 
         getPreparedGradleRunner()
                 .withArguments(testArgs)
@@ -885,7 +885,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -991,7 +991,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['example1Classes', 'example2Classes', 'example4Classes', 'example5Classes', 'example6Classes', 'example7Classes', 'example8Classes', 'example9Classes', 'example10Classes', '-s']
+        List<String> args = ['example1Classes', 'example2Classes', 'example4Classes', 'example5Classes', 'example6Classes', 'example7Classes', 'example8Classes', 'example9Classes', 'example10Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
