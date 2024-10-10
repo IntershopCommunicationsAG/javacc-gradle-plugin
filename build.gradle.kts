@@ -93,8 +93,8 @@ testing {
     suites.withType<JvmTestSuite> {
         useSpock()
         dependencies {
-            implementation("commons-io:commons-io:2.15.1")
-            implementation("com.intershop.gradle.test:test-gradle-plugin:5.0.1")
+            implementation("commons-io:commons-io:2.17.0")
+            implementation("com.intershop.gradle.test:test-gradle-plugin:5.1.0")
             implementation(gradleTestKit())
         }
 
