@@ -43,8 +43,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -138,8 +139,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -207,8 +209,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -324,8 +327,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             javacc {
@@ -379,8 +383,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -483,8 +488,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             javacc {
@@ -537,8 +543,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             val javaCCOutDir = File(project.buildDir, "generated/javacc/toy")
@@ -622,8 +629,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             val javaCCOutDir = File(project.buildDir, "generated/javacc/calcInput")
@@ -687,8 +695,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             val javaCCOutDir = File(project.buildDir, "generated/javacc/calcInput")
@@ -753,8 +762,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             val javaCCOutDir = File(project.buildDir, "generated/javacc/obfuscator")
@@ -856,8 +866,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             val javaCCOutDir = File(project.buildDir, "generated/javacc/interpreter")
@@ -921,8 +932,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -1067,8 +1079,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             val javaCCOutDir = File(project.buildDir, "generated/javacc/vtransformer")

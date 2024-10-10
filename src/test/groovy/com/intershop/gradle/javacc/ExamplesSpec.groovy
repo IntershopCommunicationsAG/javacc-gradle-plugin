@@ -40,8 +40,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 simple1
@@ -134,8 +137,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 digest
@@ -201,8 +207,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 eg1
@@ -314,8 +323,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             javacc {
                 configs {
@@ -367,8 +379,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 javaGrammar102
@@ -467,8 +482,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             javacc {
                 configs {
@@ -519,8 +537,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             def javaCCOutDir = new File(project.buildDir, 'generated/javacc/toy')
 
@@ -600,8 +621,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             def javaCCOutDir = new File(project.buildDir, 'generated/javacc/calcInput')
 
@@ -661,8 +685,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             def javaCCOutDir = new File(project.buildDir, 'generated/javacc/calcInput')
 
@@ -723,8 +750,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             def javaCCOutDir = new File(project.buildDir, 'generated/javacc/obfuscator')
 
@@ -822,8 +852,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             def javaCCOutDir = new File(project.buildDir, 'generated/javacc/interpreter')
 
@@ -883,8 +916,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 example1
@@ -1027,8 +1063,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             def javaCCOutDir = new File(project.buildDir, 'generated/javacc/vtransformer')
 
