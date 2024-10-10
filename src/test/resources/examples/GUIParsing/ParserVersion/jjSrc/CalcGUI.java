@@ -96,7 +96,7 @@ public class CalcGUI extends Frame implements CalcInputParserConstants {
     gb.setConstraints(quit, gbc);
     add(quit);
     pack();
-    show();
+    setVisible(true);
   }
 
   /**
