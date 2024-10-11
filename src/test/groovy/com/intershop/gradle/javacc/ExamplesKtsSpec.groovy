@@ -20,6 +20,15 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
 
+    private String TASK_JAVA_COMPILE_CONFIGURATION = """
+            tasks {
+                withType<JavaCompile> {
+                    options.compilerArgs.add("-Xlint:deprecation")
+                    options.compilerArgs.add("-Xlint:unchecked")
+                }
+            }
+    """.stripIndent()
+
     def 'Test Simple Examples'() {
         given:
         copyResources('examples/SimpleExamples/jj', 'jj')
@@ -34,8 +43,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -70,6 +80,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -77,7 +89,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['simple1Classes', 'simple2Classes', 'simple3Classes', 'idListClasses', 'nL_XlatorClasses', '-s']
+        List<String> args = ['simple1Classes', 'simple2Classes', 'simple3Classes', 'idListClasses', 'nL_XlatorClasses', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -127,8 +139,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -148,6 +161,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -155,7 +170,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['digestClasses', 'faqClasses', '-s']
+        List<String> args = ['digestClasses', 'faqClasses', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -194,8 +209,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -205,9 +221,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 register("eg4")
             }
 
-            val javaCCOutDirEg2 = File(project.buildDir, "generated/javacc/eg2")
-            val javaCCOutDirEg3 = File(project.buildDir, "generated/javacc/eg3")
-            val javaCCOutDirEg4 = File(project.buildDir, "generated/javacc/eg4")
+            val javaCCOutDirEg2 = project.layout.buildDirectory.file("generated/javacc/eg2").get().asFile
+            val javaCCOutDirEg3 = project.layout.buildDirectory.file("generated/javacc/eg3").get().asFile
+            val javaCCOutDirEg4 = project.layout.buildDirectory.file("generated/javacc/eg4").get().asFile
 
             javacc {
                 configs {
@@ -257,6 +273,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccEg3").dependsOn(copySrcEg3)
                 getByName("javaccEg4").dependsOn(copySrcEg4)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -264,7 +282,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['eg1Classes', 'eg2Classes', 'eg3Classes', 'eg4Classes','-s']
+        List<String> args = ['eg1Classes', 'eg2Classes', 'eg3Classes', 'eg4Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -309,8 +327,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             javacc {
@@ -320,6 +339,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -327,7 +348,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -362,8 +383,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -374,7 +396,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 register("javaGrammar15")
             }
 
-            val javaCCOutDir15 = File(project.buildDir, "generated/javacc/javaGrammar15")
+            val javaCCOutDir15 = project.layout.buildDirectory.file("generated/javacc/javaGrammar15").get().asFile
 
             javacc {
                 configs {
@@ -410,6 +432,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             
                 getByName("javaccJavaGrammar15").dependsOn(copySrc15)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -417,7 +441,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['javaGrammar102Classes', 'javaGrammar102LSClasses', 'javaGrammar11Classes', 'javaGrammar11noLAClasses', 'javaGrammar15Classes', '-s']
+        List<String> args = ['javaGrammar102Classes', 'javaGrammar102LSClasses', 'javaGrammar11Classes', 'javaGrammar11noLAClasses', 'javaGrammar15Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -464,8 +488,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             javacc {
@@ -475,6 +500,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -482,7 +509,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -516,11 +543,12 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/toy")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/toy").get().asFile
 
             javacc {
                 configs {
@@ -547,13 +575,15 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 }
             }
             
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+            
             repositories {
                 mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -568,7 +598,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         parserFile.exists()
 
         when:
-        List<String> testArgs = ['testExec', '-s']
+        List<String> testArgs = ['testExec', '-s', '--warning-mode', 'all']
 
         getPreparedGradleRunner()
                 .withArguments(testArgs)
@@ -599,11 +629,12 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/calcInput")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/calcInput").get().asFile
 
             javacc {
                 configs {
@@ -623,13 +654,15 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccCalcInput").dependsOn(copySrc)
             }
             
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+            
             repositories {
                 mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -662,11 +695,12 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/calcInput")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/calcInput").get().asFile
 
             javacc {
                 configs {
@@ -686,13 +720,15 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccCalcInput").dependsOn(copySrc)
             }
             
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+            
             repositories {
                 mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -726,11 +762,12 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/obfuscator")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/obfuscator").get().asFile
 
             javacc {
                 configs {
@@ -766,6 +803,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     args("input", "output", "config/maps", "config/nochangeids", "config/useids")
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -773,7 +812,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -795,7 +834,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         javaParserFile.exists()
 
         when:
-        List<String> testArgs = ['testExec', '-s']
+        List<String> testArgs = ['testExec', '-s', '--warning-mode', 'all']
 
         getPreparedGradleRunner()
                 .withArguments(testArgs)
@@ -827,11 +866,12 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/interpreter")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/interpreter").get().asFile
 
             javacc {
                 configs {
@@ -852,13 +892,15 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccInterpreter").dependsOn(copySrc)
             }
             
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+            
             repositories {
                 mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -890,8 +932,9 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
             sourceSets {
@@ -954,6 +997,8 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -961,7 +1006,7 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['example1Classes', 'example2Classes', 'example4Classes', 'example5Classes', 'example6Classes', 'example7Classes', 'example8Classes', 'example9Classes', 'example10Classes', '-s']
+        List<String> args = ['example1Classes', 'example2Classes', 'example4Classes', 'example5Classes', 'example6Classes', 'example7Classes', 'example8Classes', 'example9Classes', 'example10Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -1034,11 +1079,12 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
             group = "com.test.gradle"
 
             java {
-                sourceCompatibility = JavaVersion.VERSION_1_7
-                targetCompatibility = JavaVersion.VERSION_1_7
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
             }
 
-            val javaCCOutDir = File(project.buildDir, "generated/javacc/vtransformer")
+            val javaCCOutDir = project.layout.buildDirectory.file("generated/javacc/vtransformer").get().asFile
 
             javacc {
                 configs {
@@ -1059,13 +1105,15 @@ class ExamplesKtsSpec extends AbstractIntegrationKotlinSpec {
                 getByName("javaccVtransformer").dependsOn(copySrc)
             }
             
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+            
             repositories {
                 mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)

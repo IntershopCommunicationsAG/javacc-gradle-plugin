@@ -20,6 +20,13 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class ExamplesSpec extends AbstractIntegrationGroovySpec {
 
+    private String TASK_JAVA_COMPILE_CONFIGURATION = """
+            tasks.withType(JavaCompile) {
+                options.compilerArgs += ['-Xlint:deprecation']
+                options.compilerArgs += ['-Xlint:unchecked']
+            }
+    """.stripIndent()
+
     def 'Test Simple Examples'() {
         given:
         copyResources('examples/SimpleExamples/jj', 'jj')
@@ -33,8 +40,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 simple1
@@ -69,6 +79,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -76,7 +88,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['simple1Classes', 'simple2Classes', 'simple3Classes', 'idListClasses', 'nL_XlatorClasses', '-s']
+        List<String> args = ['simple1Classes', 'simple2Classes', 'simple3Classes', 'idListClasses', 'nL_XlatorClasses', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -125,8 +137,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 digest
@@ -145,6 +160,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -152,7 +169,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['digestClasses', 'faqClasses', '-s']
+        List<String> args = ['digestClasses', 'faqClasses', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -190,8 +207,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 eg1
@@ -200,9 +220,9 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 eg4
             }
 
-            def javaCCOutDirEg2 = new File(project.buildDir, 'generated/javacc/eg2')
-            def javaCCOutDirEg3 = new File(project.buildDir, 'generated/javacc/eg3')
-            def javaCCOutDirEg4 = new File(project.buildDir, 'generated/javacc/eg4')
+            def javaCCOutDirEg2 = project.layout.buildDirectory.file('generated/javacc/eg2').get().asFile
+            def javaCCOutDirEg3 = project.layout.buildDirectory.file('generated/javacc/eg3').get().asFile
+            def javaCCOutDirEg4 = project.layout.buildDirectory.file('generated/javacc/eg4').get().asFile
 
             javacc {
                 configs {
@@ -251,13 +271,15 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccEg3.dependsOn copySrcEg3
             javaccEg4.dependsOn copySrcEg4
 
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
+
             repositories {
                 mavenCentral()
             }
         """.stripIndent()
 
         when:
-        List<String> args = ['eg1Classes', 'eg2Classes', 'eg3Classes', 'eg4Classes','-s']
+        List<String> args = ['eg1Classes', 'eg2Classes', 'eg3Classes', 'eg4Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -301,8 +323,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             javacc {
                 configs {
@@ -311,6 +336,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -318,7 +345,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -352,8 +379,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 javaGrammar102
@@ -363,7 +393,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 javaGrammar15
             }
 
-            def javaCCOutDir15 = new File(project.buildDir, 'generated/javacc/javaGrammar15')
+            def javaCCOutDir15 = project.layout.buildDirectory.file('generated/javacc/javaGrammar15').get().asFile
 
             javacc {
                 configs {
@@ -395,6 +425,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                 from 'jjSrc'
                 into javaCCOutDir15
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             javaccJavaGrammar15.dependsOn copySrc15
 
@@ -404,7 +436,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['javaGrammar102Classes', 'javaGrammar102LSClasses', 'javaGrammar11Classes', 'javaGrammar11noLAClasses', 'javaGrammar15Classes', '-s']
+        List<String> args = ['javaGrammar102Classes', 'javaGrammar102LSClasses', 'javaGrammar11Classes', 'javaGrammar11noLAClasses', 'javaGrammar15Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -450,8 +482,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             javacc {
                 configs {
@@ -460,6 +495,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -467,7 +504,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -500,10 +537,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/toy')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/toy').get().asFile
 
             javacc {
                 configs {
@@ -523,10 +563,12 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccToy.dependsOn copySrc
 
             task testExec(type: JavaExec) {
-                main = 'ToyParser'
+                mainClass = 'ToyParser'
                 classpath = sourceSets.main.runtimeClasspath
                 args((new File(projectDir, 'example/divide.toy')).absolutePath, (new File(projectDir, 'example/divide.java')).absolutePath)
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -534,7 +576,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -549,7 +591,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         parserFile.exists()
 
         when:
-        List<String> testArgs = ['testExec', '-s']
+        List<String> testArgs = ['testExec', '-s', '--warning-mode', 'all']
 
         getPreparedGradleRunner()
                 .withArguments(testArgs)
@@ -579,10 +621,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/calcInput')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/calcInput').get().asFile
 
             javacc {
                 configs {
@@ -599,6 +644,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccCalcInput.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -606,7 +653,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -638,10 +685,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/calcInput')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/calcInput').get().asFile
 
             javacc {
                 configs {
@@ -658,6 +708,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccCalcInput.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -665,7 +717,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -698,10 +750,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/obfuscator')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/obfuscator').get().asFile
 
             javacc {
                 configs {
@@ -730,11 +785,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             javaccObfuscatorMap.dependsOn copySrc
 
             task testExec(type: JavaExec) {
-                main = 'Main'
+                mainClass = 'Main'
                 classpath = sourceSets.main.runtimeClasspath
                 workingDir projectDir
                 args('input', 'output', 'config/maps', 'config/nochangeids', 'config/useids')
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -742,7 +799,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -764,7 +821,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         javaParserFile.exists()
 
         when:
-        List<String> testArgs = ['testExec', '-s']
+        List<String> testArgs = ['testExec', '-s', '--warning-mode', 'all']
 
         getPreparedGradleRunner()
                 .withArguments(testArgs)
@@ -795,10 +852,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/interpreter')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/interpreter').get().asFile
 
             javacc {
                 configs {
@@ -816,6 +876,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccInterpreter.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -823,7 +885,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['compileJava', '-s']
+        List<String> args = ['compileJava', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -854,8 +916,11 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
             sourceSets {
                 example1
@@ -917,6 +982,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
                     }
                 }
             }
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
@@ -924,7 +991,7 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
         """.stripIndent()
 
         when:
-        List<String> args = ['example1Classes', 'example2Classes', 'example4Classes', 'example5Classes', 'example6Classes', 'example7Classes', 'example8Classes', 'example9Classes', 'example10Classes', '-s']
+        List<String> args = ['example1Classes', 'example2Classes', 'example4Classes', 'example5Classes', 'example6Classes', 'example7Classes', 'example8Classes', 'example9Classes', 'example10Classes', '-s', '--warning-mode', 'all']
 
         def result = getPreparedGradleRunner()
                 .withArguments(args)
@@ -996,10 +1063,13 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             version = '1.0.0.0'
             group = 'com.test.gradle'
 
-            sourceCompatibility = 1.7
-            targetCompatibility = 1.7
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            def javaCCOutDir = new File(project.buildDir, 'generated/javacc/vtransformer')
+            def javaCCOutDir = project.layout.buildDirectory.file('generated/javacc/vtransformer').get().asFile
 
             javacc {
                 configs {
@@ -1017,6 +1087,8 @@ class ExamplesSpec extends AbstractIntegrationGroovySpec {
             }
 
             javaccVtransformer.dependsOn copySrc
+            
+            ${TASK_JAVA_COMPILE_CONFIGURATION}
 
             repositories {
                 mavenCentral()
