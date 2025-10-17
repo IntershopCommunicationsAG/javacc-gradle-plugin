@@ -46,7 +46,7 @@ open class JavaCCExtension @Inject constructor(objectFactory: ObjectFactory) {
         /**
          * Default version of JavaCC library.
          */
-        const val JAVACC_VERSION = "4.2"
+        const val JAVACC_VERSION = "5.0" // 5.0 seems to be the highest compatible version
 
         /**
          * Default output path of all generation tasks.

@@ -129,7 +129,7 @@ class JavaCCPlugin : Plugin<Project> {
      */
     private fun addJavaCCConfiguration(project: Project, extension: JavaCCExtension) {
         val configuration = project.configurations.maybeCreate(JavaCCExtension.JAVACC_CONFIGURATION_NAME)
-        configuration.setVisible(false)
+        configuration
                 .setTransitive(true)
                 .setDescription("Configuration for JavaCC code generator")
                 .defaultDependencies {
