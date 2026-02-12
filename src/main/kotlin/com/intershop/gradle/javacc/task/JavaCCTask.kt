@@ -27,12 +27,15 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkerExecutor
 import java.io.File
@@ -44,6 +47,7 @@ import javax.inject.Inject
  *
  * @constructor Creates a task with a worker.
  */
+@CacheableTask
 abstract class JavaCCTask @Inject constructor(objectFactory: ObjectFactory,
                                               private val workerExecutor: WorkerExecutor) : DefaultTask(){
     
@@ -74,6 +78,7 @@ abstract class JavaCCTask @Inject constructor(objectFactory: ObjectFactory,
      *
      * @property inputFile
      */
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFile
     var inputFile: File
         get() = inputFileProperty.get().asFile
@@ -763,7 +768,7 @@ abstract class JavaCCTask @Inject constructor(objectFactory: ObjectFactory,
     /**
      * Classpath with javaCC libraries.
      */
-    @get:InputFiles
+    @get:Classpath
     val toolsclasspathfiles : FileCollection by lazy {
         val returnFiles = project.files()
         // find files of original JASPER and Eclipse compiler
