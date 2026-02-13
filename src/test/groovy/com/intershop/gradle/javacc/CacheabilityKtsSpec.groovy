@@ -298,15 +298,15 @@ class CacheabilityKtsSpec extends AbstractIntegrationKotlinSpec {
         def sourceRoot = source.toPath()
         def targetRoot = target.toPath()
 
-        Files.walk(sourceRoot).forEach { currentPath ->
-            // Calculate where this file/dir should go in the target
-            def relativePath = sourceRoot.relativize(currentPath)
-            def destinationPath = targetRoot.resolve(relativePath)
-
-            if (Files.isDirectory(currentPath)) {
-                Files.createDirectories(destinationPath)
-            } else {
-                Files.copy(currentPath, destinationPath, StandardCopyOption.REPLACE_EXISTING)
+        Files.walk(sourceRoot).withCloseable { stream ->
+            stream.forEach { currentPath ->
+                def relativePath = sourceRoot.relativize(currentPath)
+                def destinationPath = targetRoot.resolve(relativePath)
+                if (Files.isDirectory(currentPath)) {
+                    Files.createDirectories(destinationPath)
+                } else {
+                    Files.copy(currentPath, destinationPath, StandardCopyOption.REPLACE_EXISTING)
+                }
             }
         }
     }
