@@ -271,7 +271,7 @@ class CacheabilityKtsSpec extends AbstractIntegrationKotlinSpec {
         result1.task(':javaccIdList').outcome == SUCCESS
 
         when: 'Create a new project directory with same content'
-        def testProjectDir2 = File.createTempDir()
+        def testProjectDir2 = Files.createTempDirectory("gradle-test-project-${CacheabilityKtsSpec.simpleName}-").toFile()
         testProjectDir2.deleteOnExit()
 
         // Copy all files to new directory
