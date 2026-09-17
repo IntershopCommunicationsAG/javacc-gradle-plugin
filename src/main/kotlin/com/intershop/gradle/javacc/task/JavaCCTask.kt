@@ -16,11 +16,10 @@
 package com.intershop.gradle.javacc.task
 
 import com.intershop.gradle.javacc.extension.JJTree
-import com.intershop.gradle.javacc.extension.JavaCCExtension
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -767,14 +766,13 @@ abstract class JavaCCTask @Inject constructor(objectFactory: ObjectFactory,
 
     /**
      * Classpath with javaCC libraries.
+     *
+     * NOTE: this must not be resolved from the project. A `by lazy` block is evaluated while Gradle snapshots the
+     * task inputs - that already happens in the execution phase, where accessing `Task.project` is deprecated in
+     * Gradle 9 and fails in Gradle 10. The plugin wires this at configuration time instead.
      */
     @get:Classpath
-    val toolsclasspathfiles : FileCollection by lazy {
-        val returnFiles = project.files()
-        // find files of original JASPER and Eclipse compiler
-        returnFiles.from(project.configurations.findByName(JavaCCExtension.JAVACC_CONFIGURATION_NAME))
-        returnFiles
-    }
+    val toolsclasspathfiles: ConfigurableFileCollection = objectFactory.fileCollection()
 
     /**
      * Task aktion for code generation.
