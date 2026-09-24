@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 plugins {
-    id("com.gradle.develocity") version "4.1.1"
+    id("com.gradle.develocity") version "4.5.1"
 }
 
 develocity {

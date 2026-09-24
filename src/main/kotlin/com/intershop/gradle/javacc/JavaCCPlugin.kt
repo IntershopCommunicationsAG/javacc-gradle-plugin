@@ -70,6 +70,11 @@ class JavaCCPlugin : Plugin<Project> {
                 tasks.maybeCreate(javaCC.getJavaCCTaskName(), JavaCCTask::class.java).apply {
                     group = JavaCCExtension.JAVACC_GROUP_NAME
 
+                    // wire the javacc tool classpath here (configuration time). The task must not resolve it from
+                    // the project itself, because that would happen during input snapshotting at execution time.
+                    toolsclasspathfiles.from(
+                            configurations.named(JavaCCExtension.JAVACC_CONFIGURATION_NAME))
+
                     provideOutputDir(javaCC.outputDirProvider)
                     provideInputFile(javaCC.inputFileProvider)
 
